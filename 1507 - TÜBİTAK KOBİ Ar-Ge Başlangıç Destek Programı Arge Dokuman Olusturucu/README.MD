@@ -6,6 +6,8 @@ Bu agentflow, **TUBITAK 1507 KOBI Ar-Ge Baslangic Destek Programi** icin AGY100/
 
 ---
 
+![TUBITAK 1507 KOBI Ar-Ge Baslangic Destek Programi](images/image-01.png)
+
 ## Overview
 
 Bu tasarim tek bir uzun prompt yerine bolum-bazli uzmanlasmis yazim kullanir:
