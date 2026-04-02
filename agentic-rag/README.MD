@@ -94,15 +94,15 @@ Response        Question ──► (Döngü: tekrar Retrieve)
 
 ### Gereksinimler
 
-- [n8n](https://n8n.io/) (self-hosted veya cloud)
-- Vektör veritabanı (Pinecone, Qdrant, Weaviate vb.)
+- [EmploidAI](https://app.emploid.ai) (self-hosted veya cloud)
+- Vektör veritabanı (Local, Pinecone, Qdrant, Weaviate vb.)
 - LLM API anahtarı (OpenAI, Anthropic vb.)
 
 ### Import Adımları
 
-1. n8n arayüzünü açın
-2. **Workflows → Import** menüsüne gidin
-3. `agentic-rag.json` dosyasını import edin
+1. EmploidAI a giris yapin.
+2. **Agentflows → Ilgili Flow - Import** butonuna tiklayin
+3. `Agentic RAG Agent Flow.json` dosyasını import edin
 4. Credential'ları yapılandırın:
    - LLM provider API key
    - Vector DB bağlantısı
