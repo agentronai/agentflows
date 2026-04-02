@@ -1,0 +1,1976 @@
+{
+  "format": "EMPLOID_FLOW_EXPORT_V1",
+  "version": 1,
+  "exportedAt": "2026-04-02T18:45:00.000Z",
+  "metadata": {
+    "id": "cmnhmemailsummary001",
+    "name": "EMAIL Summary Assistant",
+    "description": "Nightly Gmail inbox summary flow",
+    "type": "AGENTFLOW"
+  },
+  "flowData": {
+    "nodes": [
+      {
+        "id": "startAgentflow_0",
+        "position": {
+          "x": 0,
+          "y": 200
+        },
+        "data": {
+          "id": "startAgentflow_0",
+          "label": "Nightly Email Summary",
+          "version": 1.1,
+          "name": "startAgentflow",
+          "type": "Start",
+          "color": "#7EE787",
+          "hideInput": true,
+          "baseClasses": [
+            "Start"
+          ],
+          "category": "Agent Flows",
+          "description": "Starting point of the agentflow",
+          "inputParams": [
+            {
+              "label": "Input Type",
+              "name": "startInputType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Start Button",
+                  "name": "startButton",
+                  "description": "Start the conversation with start button"
+                },
+                {
+                  "label": "Chat Input",
+                  "name": "chatInput",
+                  "description": "Start the conversation with chat input"
+                },
+                {
+                  "label": "Form Input",
+                  "name": "formInput",
+                  "description": "Start the workflow with form inputs"
+                }
+              ],
+              "default": "chatInput",
+              "id": "startAgentflow_0-input-startInputType-options",
+              "display": true
+            },
+            {
+              "label": "Form Title",
+              "name": "formTitle",
+              "type": "string",
+              "placeholder": "Please Fill Out The Form",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "id": "startAgentflow_0-input-formTitle-string",
+              "display": false
+            },
+            {
+              "label": "Form Description",
+              "name": "formDescription",
+              "type": "string",
+              "placeholder": "Complete all fields below to continue",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "id": "startAgentflow_0-input-formDescription-string",
+              "display": false
+            },
+            {
+              "label": "Form Input Types",
+              "name": "formInputTypes",
+              "description": "Specify the type of form input",
+              "type": "array",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "array": [
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    },
+                    {
+                      "label": "Options",
+                      "name": "options"
+                    }
+                  ],
+                  "default": "string"
+                },
+                {
+                  "label": "Label",
+                  "name": "label",
+                  "type": "string",
+                  "placeholder": "Label for the input"
+                },
+                {
+                  "label": "Variable Name",
+                  "name": "name",
+                  "type": "string",
+                  "placeholder": "Variable name for the input (must be camel case)",
+                  "description": "Variable name must be camel case. For example: firstName, lastName, etc."
+                },
+                {
+                  "label": "Add Options",
+                  "name": "addOptions",
+                  "type": "array",
+                  "show": {
+                    "formInputTypes[$index].type": "options"
+                  },
+                  "array": [
+                    {
+                      "label": "Option",
+                      "name": "option",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "id": "startAgentflow_0-input-formInputTypes-array",
+              "display": false
+            },
+            {
+              "label": "Ephemeral Memory",
+              "name": "startEphemeralMemory",
+              "type": "boolean",
+              "description": "Start fresh for every execution without past chat history",
+              "optional": true,
+              "id": "startAgentflow_0-input-startEphemeralMemory-boolean",
+              "display": true
+            },
+            {
+              "label": "Flow State",
+              "name": "startState",
+              "description": "Runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "string",
+                  "placeholder": "Foo"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "placeholder": "Bar",
+                  "optional": true
+                }
+              ],
+              "id": "startAgentflow_0-input-startState-array",
+              "display": true
+            },
+            {
+              "label": "Persist State",
+              "name": "startPersistState",
+              "type": "boolean",
+              "description": "Persist the state in the same session",
+              "optional": true,
+              "id": "startAgentflow_0-input-startPersistState-boolean",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "startInputType": "startButton",
+            "formTitle": "",
+            "formDescription": "",
+            "formInputTypes": "",
+            "startEphemeralMemory": true,
+            "startState": [
+              {
+                "key": "summaryRecipient",
+                "value": "your.email@example.com"
+              },
+              {
+                "key": "subjectPrefix",
+                "value": "Nightly Email Summary"
+              },
+              {
+                "key": "gmailQuery",
+                "value": "newer_than:1d in:inbox -category:promotions -category:social -in:sent -in:drafts -in:spam -in:trash"
+              },
+              {
+                "key": "lookbackDays",
+                "value": "1"
+              },
+              {
+                "key": "summaryDateLabel",
+                "value": ""
+              },
+              {
+                "key": "summarySubject",
+                "value": ""
+              },
+              {
+                "key": "summaryRecipientResolved",
+                "value": ""
+              },
+              {
+                "key": "gmailMessagesJson",
+                "value": ""
+              },
+              {
+                "key": "emailSummaryBody",
+                "value": ""
+              }
+            ],
+            "startPersistState": false
+          },
+          "outputAnchors": [
+            {
+              "id": "startAgentflow_0-output-startAgentflow",
+              "label": "Start",
+              "name": "startAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 188,
+        "height": 66,
+        "selected": false,
+        "positionAbsolute": {
+          "x": 0,
+          "y": 200
+        },
+        "dragging": false
+      },
+      {
+        "id": "utiltyAgentflow_date",
+        "position": {
+          "x": 260,
+          "y": 200
+        },
+        "data": {
+          "id": "utiltyAgentflow_date",
+          "label": "Get Current Date",
+          "version": 1,
+          "name": "utiltyAgentflow",
+          "type": "utility",
+          "color": "rgb(224, 224, 224)",
+          "baseClasses": [
+            "utility"
+          ],
+          "category": "Agent Flows",
+          "description": "Send and retrieve messages to a Discord channel using your bot token",
+          "inputParams": [
+            {
+              "label": "Type",
+              "name": "utiltyType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Date",
+                  "name": "date"
+                }
+              ],
+              "id": "utiltyAgentflow_date-input-utiltyType-options",
+              "display": true
+            },
+            {
+              "label": "Date Action",
+              "name": "dateAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Current Date",
+                  "name": "currentDate"
+                }
+              ],
+              "show": {
+                "utiltyType": [
+                  "date"
+                ]
+              },
+              "id": "utiltyAgentflow_date-input-dateAction-options",
+              "display": false
+            },
+            {
+              "label": "Format",
+              "name": "dateFormat",
+              "type": "string",
+              "description": "Date format",
+              "default": "YYYY-MM-DD",
+              "show": {
+                "utiltyType": [
+                  "date"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "utiltyAgentflow_date-input-dateFormat-string",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "utiltyType": "date",
+            "dateAction": "currentDate",
+            "dateFormat": "YYYY-MM-DD"
+          },
+          "outputAnchors": [
+            {
+              "id": "utiltyAgentflow_date-output-utiltyAgentflow",
+              "label": "Utilty",
+              "name": "utiltyAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 160,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 260,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "customFunctionAgentflow_context",
+        "position": {
+          "x": 500,
+          "y": 200
+        },
+        "data": {
+          "id": "customFunctionAgentflow_context",
+          "label": "Build Query + Subject",
+          "version": 1.1,
+          "name": "customFunctionAgentflow",
+          "type": "CustomFunction",
+          "color": "#E4B7FF",
+          "baseClasses": [
+            "CustomFunction"
+          ],
+          "category": "Agent Flows",
+          "description": "Execute custom function",
+          "inputParams": [
+            {
+              "label": "Input Variables",
+              "name": "customFunctionInputVariables",
+              "description": "Input variables can be used in the function with prefix $. For example: $foo",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Variable Name",
+                  "name": "variableName",
+                  "type": "string"
+                },
+                {
+                  "label": "Variable Value",
+                  "name": "variableValue",
+                  "type": "string",
+                  "acceptVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_context-input-customFunctionInputVariables-array",
+              "display": true
+            },
+            {
+              "label": "Javascript Function",
+              "name": "customFunctionJavascriptFunction",
+              "type": "code",
+              "codeExample": "/*\n* You can use any libraries imported in Flowise\n* You can use properties specified in Input Variables with the prefix $. For example: $foo\n* You can get default flow config: $flow.sessionId, $flow.chatId, $flow.chatflowId, $flow.input, $flow.state\n* You can get trigger values with $trigger.state.<key>\n* You can get global variables: $vars.<variable-name>\n* Must return a string value at the end of function\n*/\n\nreturn '';",
+              "description": "The function to execute. Must return a string or an object that can be converted to a string.",
+              "id": "customFunctionAgentflow_context-input-customFunctionJavascriptFunction-code",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "customFunctionUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_context-input-customFunctionUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "customFunctionInputVariables": [
+              {
+                "variableName": "currentDate",
+                "variableValue": "{{ previousNode.output }}"
+              }
+            ],
+            "customFunctionJavascriptFunction": "const currentDate = ($currentDate || '').toString().trim() || new Date().toISOString().slice(0, 10);\nconst subjectPrefix = ($flow.state.subjectPrefix || 'Nightly Email Summary').toString().trim();\nconst summaryRecipient = ($flow.state.summaryRecipient || '').toString().trim();\nconst lookbackDays = Number(($flow.state.lookbackDays || '1').toString()) || 1;\nconst defaultQuery = `newer_than:${lookbackDays}d in:inbox -category:promotions -category:social -in:sent -in:drafts -in:spam -in:trash`;\nconst gmailQuery = (($flow.state.gmailQuery || '').toString().trim()) || defaultQuery;\nconst summarySubject = `${subjectPrefix} - ${currentDate}`;\nreturn {\n  summaryDateLabel: currentDate,\n  summarySubject,\n  summaryRecipientResolved: summaryRecipient,\n  gmailQuery\n};",
+            "customFunctionUpdateState": [
+              {
+                "key": "summaryDateLabel",
+                "value": "{{ output.summaryDateLabel }}"
+              },
+              {
+                "key": "summarySubject",
+                "value": "{{ output.summarySubject }}"
+              },
+              {
+                "key": "summaryRecipientResolved",
+                "value": "{{ output.summaryRecipientResolved }}"
+              },
+              {
+                "key": "gmailQuery",
+                "value": "{{ output.gmailQuery }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "customFunctionAgentflow_context-output-customFunctionAgentflow",
+              "label": "Custom Function",
+              "name": "customFunctionAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 182,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 500,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "gmailAgentflow_list",
+        "position": {
+          "x": 780,
+          "y": 200
+        },
+        "data": {
+          "id": "gmailAgentflow_list",
+          "label": "List Recent Gmail Messages",
+          "version": 1,
+          "name": "gmailAgentflow",
+          "type": "utility",
+          "color": "rgb(224, 224, 224)",
+          "baseClasses": [
+            "utility"
+          ],
+          "category": "Agent Flows",
+          "description": "Send and retrieve messages to a Discord channel using your bot token",
+          "inputParams": [
+            {
+              "label": "GMail Credential",
+              "name": "credential",
+              "type": "credential",
+              "credentialNames": [
+                "gmailOAuth2"
+              ],
+              "optional": false,
+              "id": "gmailAgentflow_list-input-credential-credential",
+              "display": true
+            },
+            {
+              "label": "Type",
+              "name": "gmailType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Drafts",
+                  "name": "drafts"
+                },
+                {
+                  "label": "Messages",
+                  "name": "messages"
+                },
+                {
+                  "label": "Labels",
+                  "name": "labels"
+                },
+                {
+                  "label": "Threads",
+                  "name": "threads"
+                }
+              ],
+              "id": "gmailAgentflow_list-input-gmailType-options",
+              "display": true
+            },
+            {
+              "label": "Draft Actions",
+              "name": "draftAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Drafts",
+                  "name": "listDrafts"
+                },
+                {
+                  "label": "Create Draft",
+                  "name": "createDraft"
+                },
+                {
+                  "label": "Get Draft",
+                  "name": "getDraft"
+                },
+                {
+                  "label": "Update Draft",
+                  "name": "updateDraft"
+                },
+                {
+                  "label": "Send Draft",
+                  "name": "sendDraft"
+                },
+                {
+                  "label": "Delete Draft",
+                  "name": "deleteDraft"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "drafts"
+                ]
+              },
+              "id": "gmailAgentflow_list-input-draftAction-options",
+              "display": false
+            },
+            {
+              "label": "Message Actions",
+              "name": "messageAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Messages",
+                  "name": "listMessages"
+                },
+                {
+                  "label": "Get Message",
+                  "name": "getMessage"
+                },
+                {
+                  "label": "Send Message",
+                  "name": "sendMessage"
+                },
+                {
+                  "label": "Modify Message",
+                  "name": "modifyMessage"
+                },
+                {
+                  "label": "Trash Message",
+                  "name": "trashMessage"
+                },
+                {
+                  "label": "Untrash Message",
+                  "name": "untrashMessage"
+                },
+                {
+                  "label": "Delete Message",
+                  "name": "deleteMessage"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "messages"
+                ]
+              },
+              "id": "gmailAgentflow_list-input-messageAction-options",
+              "display": false
+            },
+            {
+              "label": "Label Actions",
+              "name": "labelAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Labels",
+                  "name": "listLabels"
+                },
+                {
+                  "label": "Get Label",
+                  "name": "getLabel"
+                },
+                {
+                  "label": "Create Label",
+                  "name": "createLabel"
+                },
+                {
+                  "label": "Update Label",
+                  "name": "updateLabel"
+                },
+                {
+                  "label": "Delete Label",
+                  "name": "deleteLabel"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "labels"
+                ]
+              },
+              "id": "gmailAgentflow_list-input-labelAction-options",
+              "display": false
+            },
+            {
+              "label": "Thread Actions",
+              "name": "threadAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Threads",
+                  "name": "listThreads"
+                },
+                {
+                  "label": "Get Thread",
+                  "name": "getThread"
+                },
+                {
+                  "label": "Modify Thread",
+                  "name": "modifyThread"
+                },
+                {
+                  "label": "Trash Thread",
+                  "name": "trashThread"
+                },
+                {
+                  "label": "Untrash Thread",
+                  "name": "untrashThread"
+                },
+                {
+                  "label": "Delete Thread",
+                  "name": "deleteThread"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "threads"
+                ]
+              },
+              "id": "gmailAgentflow_list-input-threadAction-options",
+              "display": false
+            },
+            {
+              "label": "Max Results",
+              "name": "draftMaxResults",
+              "type": "number",
+              "description": "Maximum number of drafts to return",
+              "default": 100,
+              "show": {
+                "draftAction": [
+                  "listDrafts"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftMaxResults-number",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "draftTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "draftSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "draftBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "draftCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "draftBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-draftBcc-string",
+              "display": false
+            },
+            {
+              "label": "Max Results",
+              "name": "messageMaxResults",
+              "type": "number",
+              "description": "Maximum number of messages to return",
+              "default": 100,
+              "show": {
+                "messageAction": [
+                  "listMessages"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageMaxResults-number",
+              "display": false
+            },
+            {
+              "label": "Query",
+              "name": "messageQuery",
+              "type": "string",
+              "description": "Query string for filtering results (Gmail search syntax)",
+              "placeholder": "is:unread from:example@gmail.com",
+              "show": {
+                "messageAction": [
+                  "listMessages"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageQuery-string",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "messageTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "messageSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "messageBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "messageCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "messageBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_list-input-messageBcc-string",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "credential": "",
+            "gmailType": "messages",
+            "draftAction": "",
+            "messageAction": "listMessages",
+            "labelAction": "",
+            "threadAction": "",
+            "draftMaxResults": 100,
+            "draftTo": "",
+            "draftSubject": "",
+            "draftBody": "",
+            "draftCc": "",
+            "draftBcc": "",
+            "messageMaxResults": 50,
+            "messageQuery": "{{ $flow.state.gmailQuery }}",
+            "messageTo": "",
+            "messageSubject": "",
+            "messageBody": "",
+            "messageCc": "",
+            "messageBcc": ""
+          },
+          "outputAnchors": [
+            {
+              "id": "gmailAgentflow_list-output-gmailAgentflow",
+              "label": "GMail",
+              "name": "gmailAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 206,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 780,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "customFunctionAgentflow_gmailJson",
+        "position": {
+          "x": 1080,
+          "y": 200
+        },
+        "data": {
+          "id": "customFunctionAgentflow_gmailJson",
+          "label": "Normalize Gmail Output",
+          "version": 1.1,
+          "name": "customFunctionAgentflow",
+          "type": "CustomFunction",
+          "color": "#E4B7FF",
+          "baseClasses": [
+            "CustomFunction"
+          ],
+          "category": "Agent Flows",
+          "description": "Execute custom function",
+          "inputParams": [
+            {
+              "label": "Input Variables",
+              "name": "customFunctionInputVariables",
+              "description": "Input variables can be used in the function with prefix $. For example: $foo",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Variable Name",
+                  "name": "variableName",
+                  "type": "string"
+                },
+                {
+                  "label": "Variable Value",
+                  "name": "variableValue",
+                  "type": "string",
+                  "acceptVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_gmailJson-input-customFunctionInputVariables-array",
+              "display": true
+            },
+            {
+              "label": "Javascript Function",
+              "name": "customFunctionJavascriptFunction",
+              "type": "code",
+              "codeExample": "return '';",
+              "description": "The function to execute. Must return a string or an object that can be converted to a string.",
+              "id": "customFunctionAgentflow_gmailJson-input-customFunctionJavascriptFunction-code",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "customFunctionUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_gmailJson-input-customFunctionUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "customFunctionInputVariables": [
+              {
+                "variableName": "gmailMessagesRaw",
+                "variableValue": "{{ previousNode.output }}"
+              }
+            ],
+            "customFunctionJavascriptFunction": "const raw = $gmailMessagesRaw;\nif (typeof raw === 'string') return raw;\ntry {\n  return JSON.stringify(raw, null, 2);\n} catch (error) {\n  return String(raw ?? '');\n}",
+            "customFunctionUpdateState": [
+              {
+                "key": "gmailMessagesJson",
+                "value": "{{ output }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "customFunctionAgentflow_gmailJson-output-customFunctionAgentflow",
+              "label": "Custom Function",
+              "name": "customFunctionAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 190,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1080,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "llmAgentflow_summary",
+        "position": {
+          "x": 1360,
+          "y": 200
+        },
+        "data": {
+          "id": "llmAgentflow_summary",
+          "label": "Generate Email Summary",
+          "version": 1.1,
+          "name": "llmAgentflow",
+          "type": "LLM",
+          "color": "#64B5F6",
+          "baseClasses": [
+            "LLM"
+          ],
+          "category": "Agent Flows",
+          "description": "Large language models to analyze user-provided inputs and generate responses",
+          "inputParams": [
+            {
+              "label": "Model",
+              "name": "llmModel",
+              "type": "asyncOptions",
+              "loadMethod": "listModels",
+              "loadConfig": true,
+              "id": "llmAgentflow_summary-input-llmModel-asyncOptions",
+              "display": true
+            },
+            {
+              "label": "Messages",
+              "name": "llmMessages",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Role",
+                  "name": "role",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "System",
+                      "name": "system"
+                    },
+                    {
+                      "label": "Assistant",
+                      "name": "assistant"
+                    },
+                    {
+                      "label": "Developer",
+                      "name": "developer"
+                    },
+                    {
+                      "label": "User",
+                      "name": "user"
+                    }
+                  ]
+                },
+                {
+                  "label": "Content",
+                  "name": "content",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "generateInstruction": true,
+                  "rows": 4
+                }
+              ],
+              "id": "llmAgentflow_summary-input-llmMessages-array",
+              "display": true
+            },
+            {
+              "label": "Enable Memory",
+              "name": "llmEnableMemory",
+              "type": "boolean",
+              "description": "Enable memory for the conversation thread",
+              "default": true,
+              "optional": true,
+              "id": "llmAgentflow_summary-input-llmEnableMemory-boolean",
+              "display": true
+            },
+            {
+              "label": "Memory Type",
+              "name": "llmMemoryType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "All Messages",
+                  "name": "allMessages",
+                  "description": "Retrieve all messages from the conversation"
+                },
+                {
+                  "label": "Window Size",
+                  "name": "windowSize",
+                  "description": "Uses a fixed window size to surface the last N messages"
+                },
+                {
+                  "label": "Conversation Summary",
+                  "name": "conversationSummary",
+                  "description": "Summarizes the whole conversation"
+                },
+                {
+                  "label": "Conversation Summary Buffer",
+                  "name": "conversationSummaryBuffer",
+                  "description": "Summarize conversations once token limit is reached. Default to 2000"
+                }
+              ],
+              "optional": true,
+              "default": "allMessages",
+              "show": {
+                "llmEnableMemory": true
+              },
+              "id": "llmAgentflow_summary-input-llmMemoryType-options",
+              "display": true
+            },
+            {
+              "label": "Window Size",
+              "name": "llmMemoryWindowSize",
+              "type": "number",
+              "default": "20",
+              "description": "Uses a fixed window size to surface the last N messages",
+              "show": {
+                "llmMemoryType": "windowSize"
+              },
+              "id": "llmAgentflow_summary-input-llmMemoryWindowSize-number",
+              "display": false
+            },
+            {
+              "label": "Max Token Limit",
+              "name": "llmMemoryMaxTokenLimit",
+              "type": "number",
+              "default": "2000",
+              "description": "Summarize conversations once token limit is reached. Default to 2000",
+              "show": {
+                "llmMemoryType": "conversationSummaryBuffer"
+              },
+              "id": "llmAgentflow_summary-input-llmMemoryMaxTokenLimit-number",
+              "display": false
+            },
+            {
+              "label": "Input Message",
+              "name": "llmUserMessage",
+              "type": "string",
+              "description": "Add an input message as user message at the end of the conversation",
+              "rows": 4,
+              "optional": true,
+              "acceptVariable": true,
+              "show": {
+                "llmEnableMemory": true
+              },
+              "id": "llmAgentflow_summary-input-llmUserMessage-string",
+              "display": true
+            },
+            {
+              "label": "Return Response As",
+              "name": "llmReturnResponseAs",
+              "type": "options",
+              "options": [
+                {
+                  "label": "User Message",
+                  "name": "userMessage"
+                },
+                {
+                  "label": "Assistant Message",
+                  "name": "assistantMessage"
+                }
+              ],
+              "default": "userMessage",
+              "id": "llmAgentflow_summary-input-llmReturnResponseAs-options",
+              "display": true
+            },
+            {
+              "label": "JSON Structured Output",
+              "name": "llmStructuredOutput",
+              "description": "Instruct the LLM to give output in a JSON structured schema",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "string"
+                },
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "String Array",
+                      "name": "stringArray"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    },
+                    {
+                      "label": "Enum",
+                      "name": "enum"
+                    },
+                    {
+                      "label": "JSON Array",
+                      "name": "jsonArray"
+                    }
+                  ]
+                },
+                {
+                  "label": "Enum Values",
+                  "name": "enumValues",
+                  "type": "string",
+                  "placeholder": "value1, value2, value3",
+                  "description": "Enum values. Separated by comma",
+                  "optional": true,
+                  "show": {
+                    "llmStructuredOutput[$index].type": "enum"
+                  }
+                },
+                {
+                  "label": "JSON Schema",
+                  "name": "jsonSchema",
+                  "type": "code",
+                  "placeholder": "{\n    \"answer\": {\n        \"type\": \"string\",\n        \"description\": \"Value of the answer\"\n    }\n}",
+                  "description": "JSON schema for the structured output",
+                  "optional": true,
+                  "hideCodeExecute": true,
+                  "show": {
+                    "llmStructuredOutput[$index].type": "jsonArray"
+                  }
+                },
+                {
+                  "label": "Description",
+                  "name": "description",
+                  "type": "string",
+                  "placeholder": "Description of the key"
+                }
+              ],
+              "id": "llmAgentflow_summary-input-llmStructuredOutput-array",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "llmUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "llmAgentflow_summary-input-llmUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "llmModel": "",
+            "llmMessages": [
+              {
+                "role": "system",
+                "content": "Sen gun sonu email triage asistani olarak calisiyorsun. Sana verilen Gmail verisine dayanarak kisa ve aksiyon odakli bir ozet hazirla. Bilgi uydurma. Ciktiyi Turkce ama ASCII karakterlerle yaz. Email icin uygun, temiz bir duzende ilerle. Hic mesaj yoksa bunu acikca belirt."
+              },
+              {
+                "role": "user",
+                "content": "Tarih: {{ $flow.state.summaryDateLabel }}\nAsagida Gmail listMessages ciktisi bulunuyor. Bundan gonderilmeye hazir gun sonu ozeti uret.\n\nIstenen format:\nGunluk Ozet\n- Toplam mesaj sayisi\n- Aksiyon gerektirenler\n- Bekleyen yanitlar\n- Bilgilendirme amacli olanlar\n\nOnemli Mesajlar\nHer madde icin gonderen, konu, kisa ozet ve onerilen aksiyon yaz.\n\nTakip Listesi\nKisa maddeler halinde yaz.\n\nGmail JSON:\n{{ $flow.state.gmailMessagesJson }}"
+              }
+            ],
+            "llmEnableMemory": false,
+            "llmMemoryType": "allMessages",
+            "llmMemoryWindowSize": "20",
+            "llmMemoryMaxTokenLimit": "2000",
+            "llmUserMessage": "",
+            "llmReturnResponseAs": "assistantMessage",
+            "llmStructuredOutput": "",
+            "llmUpdateState": [
+              {
+                "key": "emailSummaryBody",
+                "value": "{{ output }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "llmAgentflow_summary-output-llmAgentflow",
+              "label": "LLM",
+              "name": "llmAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 198,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1360,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "gmailAgentflow_send",
+        "position": {
+          "x": 1660,
+          "y": 200
+        },
+        "data": {
+          "id": "gmailAgentflow_send",
+          "label": "Send Summary Email",
+          "version": 1,
+          "name": "gmailAgentflow",
+          "type": "utility",
+          "color": "rgb(224, 224, 224)",
+          "baseClasses": [
+            "utility"
+          ],
+          "category": "Agent Flows",
+          "description": "Send and retrieve messages to a Discord channel using your bot token",
+          "inputParams": [
+            {
+              "label": "GMail Credential",
+              "name": "credential",
+              "type": "credential",
+              "credentialNames": [
+                "gmailOAuth2"
+              ],
+              "optional": false,
+              "id": "gmailAgentflow_send-input-credential-credential",
+              "display": true
+            },
+            {
+              "label": "Type",
+              "name": "gmailType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Drafts",
+                  "name": "drafts"
+                },
+                {
+                  "label": "Messages",
+                  "name": "messages"
+                },
+                {
+                  "label": "Labels",
+                  "name": "labels"
+                },
+                {
+                  "label": "Threads",
+                  "name": "threads"
+                }
+              ],
+              "id": "gmailAgentflow_send-input-gmailType-options",
+              "display": true
+            },
+            {
+              "label": "Draft Actions",
+              "name": "draftAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Drafts",
+                  "name": "listDrafts"
+                },
+                {
+                  "label": "Create Draft",
+                  "name": "createDraft"
+                },
+                {
+                  "label": "Get Draft",
+                  "name": "getDraft"
+                },
+                {
+                  "label": "Update Draft",
+                  "name": "updateDraft"
+                },
+                {
+                  "label": "Send Draft",
+                  "name": "sendDraft"
+                },
+                {
+                  "label": "Delete Draft",
+                  "name": "deleteDraft"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "drafts"
+                ]
+              },
+              "id": "gmailAgentflow_send-input-draftAction-options",
+              "display": false
+            },
+            {
+              "label": "Message Actions",
+              "name": "messageAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Messages",
+                  "name": "listMessages"
+                },
+                {
+                  "label": "Get Message",
+                  "name": "getMessage"
+                },
+                {
+                  "label": "Send Message",
+                  "name": "sendMessage"
+                },
+                {
+                  "label": "Modify Message",
+                  "name": "modifyMessage"
+                },
+                {
+                  "label": "Trash Message",
+                  "name": "trashMessage"
+                },
+                {
+                  "label": "Untrash Message",
+                  "name": "untrashMessage"
+                },
+                {
+                  "label": "Delete Message",
+                  "name": "deleteMessage"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "messages"
+                ]
+              },
+              "id": "gmailAgentflow_send-input-messageAction-options",
+              "display": false
+            },
+            {
+              "label": "Label Actions",
+              "name": "labelAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Labels",
+                  "name": "listLabels"
+                },
+                {
+                  "label": "Get Label",
+                  "name": "getLabel"
+                },
+                {
+                  "label": "Create Label",
+                  "name": "createLabel"
+                },
+                {
+                  "label": "Update Label",
+                  "name": "updateLabel"
+                },
+                {
+                  "label": "Delete Label",
+                  "name": "deleteLabel"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "labels"
+                ]
+              },
+              "id": "gmailAgentflow_send-input-labelAction-options",
+              "display": false
+            },
+            {
+              "label": "Thread Actions",
+              "name": "threadAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Threads",
+                  "name": "listThreads"
+                },
+                {
+                  "label": "Get Thread",
+                  "name": "getThread"
+                },
+                {
+                  "label": "Modify Thread",
+                  "name": "modifyThread"
+                },
+                {
+                  "label": "Trash Thread",
+                  "name": "trashThread"
+                },
+                {
+                  "label": "Untrash Thread",
+                  "name": "untrashThread"
+                },
+                {
+                  "label": "Delete Thread",
+                  "name": "deleteThread"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "threads"
+                ]
+              },
+              "id": "gmailAgentflow_send-input-threadAction-options",
+              "display": false
+            },
+            {
+              "label": "Max Results",
+              "name": "draftMaxResults",
+              "type": "number",
+              "description": "Maximum number of drafts to return",
+              "default": 100,
+              "show": {
+                "draftAction": [
+                  "listDrafts"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftMaxResults-number",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "draftTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "draftSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "draftBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "draftCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "draftBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "draftAction": [
+                  "createDraft"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-draftBcc-string",
+              "display": false
+            },
+            {
+              "label": "Max Results",
+              "name": "messageMaxResults",
+              "type": "number",
+              "description": "Maximum number of messages to return",
+              "default": 100,
+              "show": {
+                "messageAction": [
+                  "listMessages"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageMaxResults-number",
+              "display": false
+            },
+            {
+              "label": "Query",
+              "name": "messageQuery",
+              "type": "string",
+              "description": "Query string for filtering results (Gmail search syntax)",
+              "placeholder": "is:unread from:example@gmail.com",
+              "show": {
+                "messageAction": [
+                  "listMessages"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageQuery-string",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "messageTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "messageSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "messageBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "messageCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "messageBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_send-input-messageBcc-string",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "credential": "",
+            "gmailType": "messages",
+            "draftAction": "",
+            "messageAction": "sendMessage",
+            "labelAction": "",
+            "threadAction": "",
+            "draftMaxResults": 100,
+            "draftTo": "",
+            "draftSubject": "",
+            "draftBody": "",
+            "draftCc": "",
+            "draftBcc": "",
+            "messageMaxResults": 100,
+            "messageQuery": "",
+            "messageTo": "{{ $flow.state.summaryRecipientResolved }}",
+            "messageSubject": "{{ $flow.state.summarySubject }}",
+            "messageBody": "{{ $flow.state.emailSummaryBody }}",
+            "messageCc": "",
+            "messageBcc": ""
+          },
+          "outputAnchors": [
+            {
+              "id": "gmailAgentflow_send-output-gmailAgentflow",
+              "label": "GMail",
+              "name": "gmailAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 182,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1660,
+          "y": 200
+        },
+        "selected": false
+      },
+      {
+        "id": "directReplyAgentflow_0",
+        "position": {
+          "x": 1940,
+          "y": 200
+        },
+        "data": {
+          "id": "directReplyAgentflow_0",
+          "label": "Run Complete",
+          "version": 1,
+          "name": "directReplyAgentflow",
+          "type": "DirectReply",
+          "color": "#4DDBBB",
+          "hideOutput": true,
+          "baseClasses": [
+            "DirectReply"
+          ],
+          "category": "Agent Flows",
+          "description": "Directly reply to the user with a message",
+          "inputParams": [
+            {
+              "label": "Message",
+              "name": "directReplyMessage",
+              "type": "string",
+              "rows": 4,
+              "acceptVariable": true,
+              "id": "directReplyAgentflow_0-input-directReplyMessage-string",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "directReplyMessage": "Email summary gonderildi: {{ $flow.state.summaryRecipientResolved }} | Konu: {{ $flow.state.summarySubject }}"
+          },
+          "outputAnchors": [],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 162,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1940,
+          "y": 200
+        },
+        "selected": false,
+        "dragging": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "startAgentflow_0",
+        "sourceHandle": "startAgentflow_0-output-startAgentflow",
+        "target": "utiltyAgentflow_date",
+        "targetHandle": "utiltyAgentflow_date",
+        "data": {
+          "sourceColor": "#7EE787",
+          "targetColor": "rgb(224, 224, 224)",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "startAgentflow_0-startAgentflow_0-output-startAgentflow-utiltyAgentflow_date-utiltyAgentflow_date",
+        "selected": false
+      },
+      {
+        "source": "utiltyAgentflow_date",
+        "sourceHandle": "utiltyAgentflow_date-output-utiltyAgentflow",
+        "target": "customFunctionAgentflow_context",
+        "targetHandle": "customFunctionAgentflow_context",
+        "data": {
+          "sourceColor": "rgb(224, 224, 224)",
+          "targetColor": "#E4B7FF",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "utiltyAgentflow_date-utiltyAgentflow_date-output-utiltyAgentflow-customFunctionAgentflow_context-customFunctionAgentflow_context",
+        "selected": false
+      },
+      {
+        "source": "customFunctionAgentflow_context",
+        "sourceHandle": "customFunctionAgentflow_context-output-customFunctionAgentflow",
+        "target": "gmailAgentflow_list",
+        "targetHandle": "gmailAgentflow_list",
+        "data": {
+          "sourceColor": "#E4B7FF",
+          "targetColor": "rgb(224, 224, 224)",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "customFunctionAgentflow_context-customFunctionAgentflow_context-output-customFunctionAgentflow-gmailAgentflow_list-gmailAgentflow_list",
+        "selected": false
+      },
+      {
+        "source": "gmailAgentflow_list",
+        "sourceHandle": "gmailAgentflow_list-output-gmailAgentflow",
+        "target": "customFunctionAgentflow_gmailJson",
+        "targetHandle": "customFunctionAgentflow_gmailJson",
+        "data": {
+          "sourceColor": "rgb(224, 224, 224)",
+          "targetColor": "#E4B7FF",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "gmailAgentflow_list-gmailAgentflow_list-output-gmailAgentflow-customFunctionAgentflow_gmailJson-customFunctionAgentflow_gmailJson",
+        "selected": false
+      },
+      {
+        "source": "customFunctionAgentflow_gmailJson",
+        "sourceHandle": "customFunctionAgentflow_gmailJson-output-customFunctionAgentflow",
+        "target": "llmAgentflow_summary",
+        "targetHandle": "llmAgentflow_summary",
+        "data": {
+          "sourceColor": "#E4B7FF",
+          "targetColor": "#64B5F6",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "customFunctionAgentflow_gmailJson-customFunctionAgentflow_gmailJson-output-customFunctionAgentflow-llmAgentflow_summary-llmAgentflow_summary",
+        "selected": false
+      },
+      {
+        "source": "llmAgentflow_summary",
+        "sourceHandle": "llmAgentflow_summary-output-llmAgentflow",
+        "target": "gmailAgentflow_send",
+        "targetHandle": "gmailAgentflow_send",
+        "data": {
+          "sourceColor": "#64B5F6",
+          "targetColor": "rgb(224, 224, 224)",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "llmAgentflow_summary-llmAgentflow_summary-output-llmAgentflow-gmailAgentflow_send-gmailAgentflow_send",
+        "selected": false
+      },
+      {
+        "source": "gmailAgentflow_send",
+        "sourceHandle": "gmailAgentflow_send-output-gmailAgentflow",
+        "target": "directReplyAgentflow_0",
+        "targetHandle": "directReplyAgentflow_0",
+        "data": {
+          "sourceColor": "rgb(224, 224, 224)",
+          "targetColor": "#4DDBBB",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "gmailAgentflow_send-gmailAgentflow_send-output-gmailAgentflow-directReplyAgentflow_0-directReplyAgentflow_0",
+        "selected": false
+      }
+    ]
+  }
+}
