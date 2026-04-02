@@ -2,109 +2,134 @@
 
 ### Creator : [selim@agentron.ai](selim@agentron.ai)
 
-Bu agentflow, **TUBITAK 1507 KOBI Ar-Ge Baslangic Destek Programi** icin ilk taslak Ar-Ge dokumanini olusturmak uzere tasarlanmis bir ornektir. Akis, kullanicidan proje bilgilerini form uzerinden toplar, girilen verilerin dokuman uretimi icin yeterli olup olmadigini kontrol eder ve yeterli bilgi varsa 1507 basvuru mantigina uygun bir taslak dokuman uretir.
+Bu agentflow, **TUBITAK 1507 KOBI Ar-Ge Baslangic Destek Programi** icin AGY100/AGY101 dokuman basliklarina hizali, cok adimli bir taslak olusturma akisidir. Akis; form verisini toplar, bilgi yeterliligini kontrol eder, her ana bolumu ayri bir LLM ile yazar, sonucu tek markdown dokumanda birlestirir, PDF uretir ve Workspace Drive'a kaydeder.
 
 ---
 
 ## Overview
 
-Bu akis iki temel problemi cozer:
+Bu tasarim tek bir uzun prompt yerine bolum-bazli uzmanlasmis yazim kullanir:
 
-- Basvuru oncesi daginik proje bilgisini tek bir standart formatta toplar
-- Bilgi eksikliginde kullaniciyi dogrudan taslak uretmek yerine eksik alanlara yonlendirir
-
-Boylece ekip, zayif veya belirsiz girdilerle dusuk kaliteli bir basvuru taslagi almak yerine once eksiklerini gorur; yeterli girdide ise yapilandirilmis bir Ar-Ge dokumani elde eder.
+- Her ana bolum farkli bir LLM node'u tarafindan uretilir
+- Butce bolumu `F.1`-`F.7` icin ayri ayri ele alinir
+- Son cikti tek markdown dokumanda birlestirilir
+- Dokuman PDF'e cevrilir ve Drive'da proje klasorune kaydedilir
+- Bilgi eksikligi varsa akis PDF uretmeden once kullaniciyi geri yonlendirir
 
 ---
 
 ## Flow Mimarisi
 
-Asagidaki akis, surecin mantigini ozetler:
-
 ```text
-Baslangic Formu
+Start Intake Form
    |
    v
 Check 1507 Readiness
    |
-   +--> Bilgi eksik / belirsiz
-   |        |
-   |        v
+   +--> Eksik bilgi
+   |       |
+   |       v
    |   Generate Missing Information Guidance
    |
-   +--> Bilgi yeterli / taslaga hazir
-            |
-            v
-      Build Proposal Strategy
-            |
-            v
-      Generate 1507 Draft Document
+   +--> Yeterli bilgi
+           |
+           v
+      LLM-A  -> A bolumu
+      LLM-B  -> B bolumu
+      LLM-C  -> C bolumu
+      LLM-D  -> D bolumu
+      LLM-E  -> E bolumu
+      LLM-F1 -> F.1 bolumu
+      LLM-F2 -> F.2 bolumu
+      LLM-F3 -> F.3 bolumu
+      LLM-F4 -> F.4 bolumu
+      LLM-F5 -> F.5 bolumu
+      LLM-F6 -> F.6 bolumu
+      LLM-F7 -> F.7 bolumu
+      LLM-F-Merge -> F ana bolumu
+      LLM-G  -> Ekler checklist
+           |
+           v
+      LLM-Final-Merge
+           |
+           v
+       Create PDF
+           |
+           v
+      Capture PDF Base64
+           |
+           v
+      Create Root Folder
+           |
+           v
+      Create Project Folder
+           |
+           v
+      Save PDF To Drive
+           |
+           v
+        Success Reply
 ```
 
-### Adimlar
+---
 
-1. **Baslangic Formu** node'u proje ile ilgili temel basvuru verilerini toplar.
-2. **Check 1507 Readiness** node'u, girilen bilgilerin dokuman uretimi icin yeterli olup olmadigini degerlendirir.
-3. Bilgi yetersizse **Generate Missing Information Guidance** node'u eksik alanlari, neden onemli olduklarini ve kullanicidan hangi sorularin istenmesi gerektigini listeler.
-4. Bilgi yeterliyse **Build Proposal Strategy** node'u proje kurgusunu netlestirir; problem, yenilik, teknik yaklasim, ciktilar ve ticarilesme cercevesini hazirlar.
-5. **Generate 1507 Draft Document** node'u, onceki analiz ve kullanici girdileriyle 1507 formatina yakin bir taslak dokuman uretir.
+## Node Gruplari
+
+| Grup | Node Tipi | Amac |
+|------|-----------|------|
+| **Start Intake Form** | Start | AGY100/AGY101 basliklarina hizali proje girdilerini form ile toplar. |
+| **Check 1507 Readiness** | ConditionAgent | Kritik alanlarin doluluk ve anlam yeterliligini kontrol eder. |
+| **Generate Missing Information Guidance** | LLM | Eksik alanlari, sorulmasi gereken sorulari ve iyilestirme onerilerini uretir. |
+| **LLM-A ... LLM-G** | LLM | Her ana bolumu veya alt butce bolumunu ayri uzman node ile yazar. |
+| **LLM-F-Merge** | LLM | `F.1`-`F.7` ciktilarini tek `F` bolumunde toplar. |
+| **LLM-Final-Merge** | LLM | `A`-`G` bolumlerini dogru sirada tek markdown belgeye donusturur. |
+| **Create PDF** | CreatePDF | Nihai markdown dokumani PDF'e cevirir. |
+| **Capture PDF Base64** | CustomFunction | PDF node ciktisini Drive yazimi icin state'e alir. |
+| **Create Root Folder / Create Project Folder / Save PDF To Drive** | Drive | PDF'i `/Workspace/TUBITAK 1507/<proje>` yoluna kaydeder. |
+| **Success Reply** | DirectReply | Kaydedilen dosya yolunu kullaniciya bildirir. |
 
 ---
 
-## Node Aciklamalari
+## Formda Toplanan Ana Alanlar
 
-| Node | Tip | Aciklama |
-|------|-----|----------|
-| **Start Intake Form** | Start | Form input ile proje girdilerini toplar. |
-| **Check 1507 Readiness** | ConditionAgent | Bilginin yeterli ve acik olup olmadigini kontrol eder. |
-| **Generate Missing Information Guidance** | LLM | Eksik bilgi listesi, netlestirme sorulari ve iyilestirme onerileri uretir. |
-| **Build Proposal Strategy** | LLM | Basvurunun cekirdek kurgusunu ve anlatim omurgasini cikarir. |
-| **Generate 1507 Draft Document** | LLM | 1507 icin kullanilabilecek taslak Ar-Ge dokumanini markdown formatinda uretir. |
+Akis; dokuman basliklarina hizali olarak su alanlari toplar:
 
----
+- Kimlik ve genel bilgiler: `projeNumarasi`, `projeAdi`, `kurulusAdi`, `ortakAdi`
+- Teknoloji ve konum: `teknolojiGrubu`, `baslangicThs`, `hedefThs`, `argeSektoru`, `ciktiSektoru`, `hedefPazar`
+- `A.0` karsilastirma notlari
+- `A`, `B`, `C`, `D`, `E` ana bolumleri icin serbest metin girdileri
+- `F.1`-`F.7` butce alt formlari icin ayri serbest metin girdileri
+- `G` icin ekler notlari
 
-## Formda Toplanan Bilgiler
-
-Akis, asagidaki temel alanlari toplar:
-
-- Firma adi
-- Proje adi
-- Sektor
-- Musteri problemi
-- Cozum ve yenilik
-- Ar-Ge amaci
-- Teknik yaklasim
-- Is paketleri
-- Beklenen ciktilar
-- Hedef pazar
-- Ticari etki
-- Ekip yetkinligi
-- Proje suresi
-- Butce ozeti
-- Riskler
-- Basari kriterleri
-
-Bu alanlar, hem yeterlilik kontrolunde hem de nihai dokuman uretiminde kullanilir.
+Bu tasarim tablo bazli maliyet girisi yerine, her alt formu anlatimsel veriyle besleyen pratik bir yapi kullanir.
 
 ---
 
-## Uretilen Dokuman Yapisi
+## Flow State
 
-Son node, asagidaki basliklari iceren bir taslak uretir:
+Start node'unda asagidaki state key'leri tanimlidir:
 
-- Proje Ozeti
-- Problem Tanimi ve Ihtiyac
-- Yenilikci Yon ve Ar-Ge Niteligi
-- Teknik Yaklasim ve Yontem
-- Is Paketleri ve Zaman Plani
-- Beklenen Ciktilar ve Basari Kriterleri
-- Ticarilesme Potansiyeli
-- Proje Ekibi ve Yetkinlikler
-- Riskler ve Onlemler
-- Butce Gerekcesi
-- Varsayimlar ve Netlestirilmesi Gereken Noktalar
+- `sectionA`, `sectionB`, `sectionC`, `sectionD`, `sectionE`
+- `sectionF1` ... `sectionF7`
+- `sectionF`, `sectionG`
+- `finalMarkdown`
+- `projeKlasoruAdi`, `pdfDosyaAdi`, `pdfBase64`
 
-Bu yapi, resmi basvuru formunun birebir kopyasi degil; 1507 basvurusunu hazirlamayi kolaylastiran bir ilk taslak iskeleti sunar.
+Her LLM node'u kendi bolum ciktisini `{{ output }}` ile ilgili state key'ine yazar. Final merge node'u ise bu state key'lerini birlestirerek nihai markdown belgeyi olusturur.
+
+---
+
+## PDF ve Drive Davranisi
+
+Hazirlik kontrolu olumluysa akis:
+
+1. Bolumleri markdown olarak olusturur
+2. Tum bolumleri tek belgeye birlestirir
+3. `CreatePDF` ile PDF uretir
+4. `/Workspace/TUBITAK 1507` ust klasoru altinda proje klasoru olusturur
+5. PDF'i su kalipta kaydeder:
+
+`/Workspace/TUBITAK 1507/<projeNumarasi veya projeAdi>/<projeNumarasi veya projeAdi - TUBITAK 1507 Taslak.pdf>`
 
 ---
 
@@ -114,57 +139,34 @@ Bu yapi, resmi basvuru formunun birebir kopyasi degil; 1507 basvurusunu hazirlam
 
 - [EmploidAI](https://app.emploid.ai)
 - En az bir LLM provider baglantisi
+- Workspace Drive yetkisi
 
 ### Import Adimlari
 
 1. EmploidAI'a giris yapin.
-2. **Agentflows** alanina gidin.
+2. **Agentflows** ekranina gidin.
 3. Import islemini baslatin.
 4. `1507 - TUBITAK KOBI Ar-Ge Baslangic Destek Programi Arge Dokuman Olusturucu Agent Flow.json` dosyasini import edin.
-5. LLM node'larinda kullanmak istediginiz modeli secin.
-6. Flow'u calistirip form alanlarini doldurun.
+5. Tum `LLM` ve `ConditionAgent` node'larinda model secimini yapin.
+6. Workflow'u calistirip formu doldurun.
 
 ---
 
-## Yapilandirma
+## Kullanim Notlari
 
-### LLM Modeli
+- Bu akis resmi basvuru yerine gecen nihai belge uretmez; ilk taslak ve ic calisma metni uretir.
+- Bilgi eksikse sistem bilerek PDF olusturmaz.
+- `G. Ekler` bolumu dosya yukleme yapmaz; ekler checklist'i olusturur.
+- `F.1`-`F.7` butce bolumleri ayri node'larda yazildigi icin ilgili prompt'lar kolayca ozellestirilebilir.
 
-Tum LLM node'larinda ayni model kullanilabilecegi gibi, asagidaki gibi bir ayrim da yapilabilir:
+---
 
-- Hazirlik ve kontrol adimlari icin hizli bir model
-- Nihai dokuman uretimi icin daha guclu bir model
-
-Onerilen modeller:
+## Onerilen Modeller
 
 - `gpt-4o`
 - `claude-sonnet-4-6`
 
-### Prompt Ozellestirme
-
-Kuruma veya sektore gore asagidaki alanlar kolayca ozellestirilebilir:
-
-- 1507 yerine farkli destek programlari
-- Sektor-ozel degerlendirme kriterleri
-- Dokuman basliklari
-- Cikti dili ve ton
-
----
-
-## Kullanim Senaryolari
-
-- Danismanlik ekiplerinin basvuru oncesi hizli ilk taslak uretmesi
-- KOBI'lerin proje fikirlerini 1507 mantigina gore yapilandirmasi
-- Is gelistirme veya Ar-Ge ekiplerinin eksik bilgi analizini standartlastirmasi
-- Uzun basvuru metinlerinden once "hazirlik seviyesi kontrolu" yapilmasi
-
----
-
-## Notlar
-
-- Bu akis, resmi basvuru sonucunu tahmin etmez; yalnizca taslak olusturma surecini hizlandirir.
-- Bilgi yetersizse dokuman uretmek yerine eksik alanlari gostermesi, bilerek tasarlanmis bir davranistir.
-- Istenirse bu akis sonraki versiyonda `CreatePDF`, `Drive` veya `HumanInput` node'lariyla genisletilebilir.
+Hiz oncelikli kurulumlarda butce alt bolumleri icin daha hizli model, final merge icin daha guclu model tercih edilebilir.
 
 ---
 
