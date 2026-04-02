@@ -1,0 +1,2352 @@
+{
+  "format": "EMPLOID_FLOW_EXPORT_V1",
+  "version": 1,
+  "exportedAt": "2026-04-02T21:45:00.000Z",
+  "metadata": {
+    "id": "cmnhmemploidsupport001",
+    "name": "EmploidAI Support Assistant",
+    "description": "Form-based support ticket intake, AI triage, Collections record creation and Gmail notification flow",
+    "type": "AGENTFLOW"
+  },
+  "flowData": {
+    "nodes": [
+      {
+        "id": "startAgentflow_0",
+        "position": {
+          "x": 0,
+          "y": 260
+        },
+        "data": {
+          "id": "startAgentflow_0",
+          "label": "Support Intake Form",
+          "version": 1.1,
+          "name": "startAgentflow",
+          "type": "Start",
+          "color": "#7EE787",
+          "hideInput": true,
+          "baseClasses": [
+            "Start"
+          ],
+          "category": "Agent Flows",
+          "description": "Starting point of the agentflow",
+          "inputParams": [
+            {
+              "label": "Input Type",
+              "name": "startInputType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Start Button",
+                  "name": "startButton",
+                  "description": "Start the conversation with start button"
+                },
+                {
+                  "label": "Chat Input",
+                  "name": "chatInput",
+                  "description": "Start the conversation with chat input"
+                },
+                {
+                  "label": "Form Input",
+                  "name": "formInput",
+                  "description": "Start the workflow with form inputs"
+                }
+              ],
+              "default": "chatInput",
+              "id": "startAgentflow_0-input-startInputType-options",
+              "display": true
+            },
+            {
+              "label": "Form Title",
+              "name": "formTitle",
+              "type": "string",
+              "placeholder": "Please Fill Out The Form",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "id": "startAgentflow_0-input-formTitle-string",
+              "display": false
+            },
+            {
+              "label": "Form Description",
+              "name": "formDescription",
+              "type": "string",
+              "placeholder": "Complete all fields below to continue",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "id": "startAgentflow_0-input-formDescription-string",
+              "display": false
+            },
+            {
+              "label": "Form Input Types",
+              "name": "formInputTypes",
+              "description": "Specify the type of form input",
+              "type": "array",
+              "show": {
+                "startInputType": "formInput"
+              },
+              "array": [
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    },
+                    {
+                      "label": "Options",
+                      "name": "options"
+                    }
+                  ],
+                  "default": "string"
+                },
+                {
+                  "label": "Label",
+                  "name": "label",
+                  "type": "string",
+                  "placeholder": "Label for the input"
+                },
+                {
+                  "label": "Variable Name",
+                  "name": "name",
+                  "type": "string",
+                  "placeholder": "Variable name for the input (must be camel case)",
+                  "description": "Variable name must be camel case. For example: firstName, lastName, etc."
+                },
+                {
+                  "label": "Add Options",
+                  "name": "addOptions",
+                  "type": "array",
+                  "show": {
+                    "formInputTypes[$index].type": "options"
+                  },
+                  "array": [
+                    {
+                      "label": "Option",
+                      "name": "option",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "id": "startAgentflow_0-input-formInputTypes-array",
+              "display": false
+            },
+            {
+              "label": "Ephemeral Memory",
+              "name": "startEphemeralMemory",
+              "type": "boolean",
+              "description": "Start fresh for every execution without past chat history",
+              "optional": true,
+              "id": "startAgentflow_0-input-startEphemeralMemory-boolean",
+              "display": true
+            },
+            {
+              "label": "Flow State",
+              "name": "startState",
+              "description": "Runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "string",
+                  "placeholder": "Foo"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "placeholder": "Bar",
+                  "optional": true
+                }
+              ],
+              "id": "startAgentflow_0-input-startState-array",
+              "display": true
+            },
+            {
+              "label": "Persist State",
+              "name": "startPersistState",
+              "type": "boolean",
+              "description": "Persist the state in the same session",
+              "optional": true,
+              "id": "startAgentflow_0-input-startPersistState-boolean",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "startInputType": "formInput",
+            "formTitle": "Submit Support Request",
+            "formDescription": "Fill in the fields below. The flow validates setup, classifies the issue, creates a Collections ticket record and sends an internal Gmail notification.",
+            "formInputTypes": [
+              {
+                "type": "string",
+                "label": "Requester Name",
+                "name": "requesterName"
+              },
+              {
+                "type": "string",
+                "label": "Requester Email",
+                "name": "requesterEmail"
+              },
+              {
+                "type": "string",
+                "label": "Company Name",
+                "name": "companyName"
+              },
+              {
+                "type": "string",
+                "label": "Subject",
+                "name": "subject"
+              },
+              {
+                "type": "string",
+                "label": "Message",
+                "name": "message"
+              },
+              {
+                "type": "options",
+                "label": "Urgency",
+                "name": "urgency",
+                "addOptions": [
+                  {
+                    "option": "low"
+                  },
+                  {
+                    "option": "normal"
+                  },
+                  {
+                    "option": "high"
+                  },
+                  {
+                    "option": "critical"
+                  }
+                ]
+              },
+              {
+                "type": "string",
+                "label": "Reference ID",
+                "name": "referenceId"
+              },
+              {
+                "type": "string",
+                "label": "Product Area",
+                "name": "productArea"
+              },
+              {
+                "type": "boolean",
+                "label": "Consent To Contact",
+                "name": "consentToContact"
+              },
+              {
+                "type": "options",
+                "label": "Preferred Channel",
+                "name": "preferredChannel",
+                "addOptions": [
+                  {
+                    "option": "email"
+                  },
+                  {
+                    "option": "phone"
+                  },
+                  {
+                    "option": "no_preference"
+                  }
+                ]
+              }
+            ],
+            "startEphemeralMemory": true,
+            "startState": [
+              {
+                "key": "supportCollectionId",
+                "value": ""
+              },
+              {
+                "key": "notificationEmail",
+                "value": ""
+              },
+              {
+                "key": "urgentNotificationEmail",
+                "value": ""
+              },
+              {
+                "key": "defaultStatus",
+                "value": "new"
+              },
+              {
+                "key": "defaultAssigneeTeam",
+                "value": "support"
+              },
+              {
+                "key": "ticketPrefix",
+                "value": "SUP"
+              },
+              {
+                "key": "ticketId",
+                "value": ""
+              },
+              {
+                "key": "createdAtIso",
+                "value": ""
+              },
+              {
+                "key": "triageCategory",
+                "value": ""
+              },
+              {
+                "key": "triagePriority",
+                "value": ""
+              },
+              {
+                "key": "triageSummary",
+                "value": ""
+              },
+              {
+                "key": "triageSuggestedTeam",
+                "value": ""
+              },
+              {
+                "key": "triageNextAction",
+                "value": ""
+              },
+              {
+                "key": "ticketRecordPayload",
+                "value": ""
+              },
+              {
+                "key": "notificationSubject",
+                "value": ""
+              },
+              {
+                "key": "notificationBody",
+                "value": ""
+              },
+              {
+                "key": "hasRequiredConfig",
+                "value": ""
+              },
+              {
+                "key": "setupGuidance",
+                "value": ""
+              },
+              {
+                "key": "notificationTargetEmail",
+                "value": ""
+              },
+              {
+                "key": "isUrgent",
+                "value": ""
+              }
+            ],
+            "startPersistState": false
+          },
+          "outputAnchors": [
+            {
+              "id": "startAgentflow_0-output-startAgentflow",
+              "label": "Start",
+              "name": "startAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 212,
+        "height": 66,
+        "selected": false,
+        "positionAbsolute": {
+          "x": 0,
+          "y": 260
+        },
+        "dragging": false
+      },
+      {
+        "id": "customFunctionAgentflow_config",
+        "position": {
+          "x": 280,
+          "y": 260
+        },
+        "data": {
+          "id": "customFunctionAgentflow_config",
+          "label": "Validate Required Config",
+          "version": 1.1,
+          "name": "customFunctionAgentflow",
+          "type": "CustomFunction",
+          "color": "#E4B7FF",
+          "baseClasses": [
+            "CustomFunction"
+          ],
+          "category": "Agent Flows",
+          "description": "Execute custom function",
+          "inputParams": [
+            {
+              "label": "Input Variables",
+              "name": "customFunctionInputVariables",
+              "description": "Input variables can be used in the function with prefix $. For example: $foo",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Variable Name",
+                  "name": "variableName",
+                  "type": "string"
+                },
+                {
+                  "label": "Variable Value",
+                  "name": "variableValue",
+                  "type": "string",
+                  "acceptVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_config-input-customFunctionInputVariables-array",
+              "display": true
+            },
+            {
+              "label": "Javascript Function",
+              "name": "customFunctionJavascriptFunction",
+              "type": "code",
+              "codeExample": "return '';",
+              "description": "The function to execute. Must return a string or an object that can be converted to a string.",
+              "id": "customFunctionAgentflow_config-input-customFunctionJavascriptFunction-code",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "customFunctionUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_config-input-customFunctionUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "customFunctionInputVariables": [
+              {
+                "variableName": "supportCollectionId",
+                "variableValue": "{{ $flow.state.supportCollectionId }}"
+              },
+              {
+                "variableName": "notificationEmail",
+                "variableValue": "{{ $flow.state.notificationEmail }}"
+              },
+              {
+                "variableName": "urgentNotificationEmail",
+                "variableValue": "{{ $flow.state.urgentNotificationEmail }}"
+              }
+            ],
+            "customFunctionJavascriptFunction": "const supportCollectionId = String($supportCollectionId || '').trim();\nconst notificationEmail = String($notificationEmail || '').trim();\nconst urgentNotificationEmail = String($urgentNotificationEmail || '').trim();\nconst missing = [];\nif (!supportCollectionId) missing.push('supportCollectionId');\nif (!notificationEmail) missing.push('notificationEmail');\nconst guidance = [\n  'Configuration required before this flow can create a support ticket.',\n  missing.length ? `Missing startState keys: ${missing.join(', ')}` : '',\n  '',\n  'Required setup:',\n  '1. Set startState.supportCollectionId to your Collections support ticket collection ID.',\n  '2. Set startState.notificationEmail to the internal mailbox that should receive standard ticket notifications.',\n  '3. Optional: Set startState.urgentNotificationEmail for high and critical issues.',\n  '4. Connect a gmailOAuth2 credential on both Gmail nodes after import.'\n].filter(Boolean).join('\\n');\nreturn {\n  hasRequiredConfig: missing.length === 0,\n  setupGuidance: guidance,\n  normalizedSupportCollectionId: supportCollectionId,\n  normalizedNotificationEmail: notificationEmail,\n  normalizedUrgentNotificationEmail: urgentNotificationEmail\n};",
+            "customFunctionUpdateState": [
+              {
+                "key": "hasRequiredConfig",
+                "value": "{{ output.hasRequiredConfig }}"
+              },
+              {
+                "key": "setupGuidance",
+                "value": "{{ output.setupGuidance }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "customFunctionAgentflow_config-output-customFunctionAgentflow",
+              "label": "Custom Function",
+              "name": "customFunctionAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 196,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 280,
+          "y": 260
+        },
+        "selected": false
+      },
+      {
+        "id": "conditionAgentflow_config",
+        "position": {
+          "x": 560,
+          "y": 260
+        },
+        "data": {
+          "id": "conditionAgentflow_config",
+          "label": "Config Missing?",
+          "version": 1,
+          "name": "conditionAgentflow",
+          "type": "Condition",
+          "color": "#FFB938",
+          "baseClasses": [
+            "Condition"
+          ],
+          "category": "Agent Flows",
+          "description": "Split flows based on If Else conditions",
+          "inputParams": [
+            {
+              "label": "Conditions",
+              "name": "conditions",
+              "type": "array",
+              "description": "Values to compare",
+              "acceptVariable": true,
+              "default": [
+                {
+                  "type": "string",
+                  "value1": "",
+                  "operation": "equal",
+                  "value2": ""
+                }
+              ],
+              "array": [
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    }
+                  ],
+                  "default": "string"
+                },
+                {
+                  "label": "Value 1",
+                  "name": "value1",
+                  "type": "string",
+                  "default": "",
+                  "description": "First value to be compared with",
+                  "acceptVariable": true,
+                  "show": {
+                    "conditions[$index].type": "string"
+                  }
+                },
+                {
+                  "label": "Operation",
+                  "name": "operation",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "Contains",
+                      "name": "contains"
+                    },
+                    {
+                      "label": "Ends With",
+                      "name": "endsWith"
+                    },
+                    {
+                      "label": "Equal",
+                      "name": "equal"
+                    },
+                    {
+                      "label": "Not Contains",
+                      "name": "notContains"
+                    },
+                    {
+                      "label": "Not Equal",
+                      "name": "notEqual"
+                    },
+                    {
+                      "label": "Regex",
+                      "name": "regex"
+                    },
+                    {
+                      "label": "Starts With",
+                      "name": "startsWith"
+                    },
+                    {
+                      "label": "Is Empty",
+                      "name": "isEmpty"
+                    },
+                    {
+                      "label": "Not Empty",
+                      "name": "notEmpty"
+                    }
+                  ],
+                  "default": "equal",
+                  "description": "Type of operation",
+                  "show": {
+                    "conditions[$index].type": "string"
+                  }
+                },
+                {
+                  "label": "Value 2",
+                  "name": "value2",
+                  "type": "string",
+                  "default": "",
+                  "description": "Second value to be compared with",
+                  "acceptVariable": true,
+                  "show": {
+                    "conditions[$index].type": "string"
+                  },
+                  "hide": {
+                    "conditions[$index].operation": [
+                      "isEmpty",
+                      "notEmpty"
+                    ]
+                  }
+                }
+              ],
+              "id": "conditionAgentflow_config-input-conditions-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "conditions": [
+              {
+                "type": "string",
+                "value1": "{{ $flow.state.hasRequiredConfig }}",
+                "operation": "equal",
+                "value2": "false"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "conditionAgentflow_config-output-0",
+              "label": "Condition",
+              "name": "conditionAgentflow"
+            },
+            {
+              "id": "conditionAgentflow_config-output-1",
+              "label": "Condition",
+              "name": "conditionAgentflow"
+            }
+          ],
+          "outputs": {
+            "conditionAgentflow": ""
+          },
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 140,
+        "height": 80,
+        "positionAbsolute": {
+          "x": 560,
+          "y": 260
+        },
+        "selected": false
+      },
+      {
+        "id": "directReplyAgentflow_setup",
+        "position": {
+          "x": 840,
+          "y": 120
+        },
+        "data": {
+          "id": "directReplyAgentflow_setup",
+          "label": "Setup Guidance Reply",
+          "version": 1,
+          "name": "directReplyAgentflow",
+          "type": "DirectReply",
+          "color": "#4DDBBB",
+          "hideOutput": true,
+          "baseClasses": [
+            "DirectReply"
+          ],
+          "category": "Agent Flows",
+          "description": "Directly reply to the user with a message",
+          "inputParams": [
+            {
+              "label": "Message",
+              "name": "directReplyMessage",
+              "type": "string",
+              "rows": 4,
+              "acceptVariable": true,
+              "id": "directReplyAgentflow_setup-input-directReplyMessage-string",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "directReplyMessage": "{{ $flow.state.setupGuidance }}"
+          },
+          "outputAnchors": [],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 184,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 840,
+          "y": 120
+        },
+        "selected": false
+      },
+      {
+        "id": "llmAgentflow_triage",
+        "position": {
+          "x": 840,
+          "y": 340
+        },
+        "data": {
+          "id": "llmAgentflow_triage",
+          "label": "AI Triage LLM",
+          "version": 1.1,
+          "name": "llmAgentflow",
+          "type": "LLM",
+          "color": "#64B5F6",
+          "baseClasses": [
+            "LLM"
+          ],
+          "category": "Agent Flows",
+          "description": "Large language models to analyze user-provided inputs and generate responses",
+          "inputParams": [
+            {
+              "label": "Model",
+              "name": "llmModel",
+              "type": "asyncOptions",
+              "loadMethod": "listModels",
+              "loadConfig": true,
+              "id": "llmAgentflow_triage-input-llmModel-asyncOptions",
+              "display": true
+            },
+            {
+              "label": "Messages",
+              "name": "llmMessages",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Role",
+                  "name": "role",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "System",
+                      "name": "system"
+                    },
+                    {
+                      "label": "Assistant",
+                      "name": "assistant"
+                    },
+                    {
+                      "label": "Developer",
+                      "name": "developer"
+                    },
+                    {
+                      "label": "User",
+                      "name": "user"
+                    }
+                  ]
+                },
+                {
+                  "label": "Content",
+                  "name": "content",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "generateInstruction": true,
+                  "rows": 4
+                }
+              ],
+              "id": "llmAgentflow_triage-input-llmMessages-array",
+              "display": true
+            },
+            {
+              "label": "Enable Memory",
+              "name": "llmEnableMemory",
+              "type": "boolean",
+              "description": "Enable memory for the conversation thread",
+              "default": true,
+              "optional": true,
+              "id": "llmAgentflow_triage-input-llmEnableMemory-boolean",
+              "display": true
+            },
+            {
+              "label": "Memory Type",
+              "name": "llmMemoryType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "All Messages",
+                  "name": "allMessages",
+                  "description": "Retrieve all messages from the conversation"
+                },
+                {
+                  "label": "Window Size",
+                  "name": "windowSize",
+                  "description": "Uses a fixed window size to surface the last N messages"
+                },
+                {
+                  "label": "Conversation Summary",
+                  "name": "conversationSummary",
+                  "description": "Summarizes the whole conversation"
+                },
+                {
+                  "label": "Conversation Summary Buffer",
+                  "name": "conversationSummaryBuffer",
+                  "description": "Summarize conversations once token limit is reached. Default to 2000"
+                }
+              ],
+              "optional": true,
+              "default": "allMessages",
+              "show": {
+                "llmEnableMemory": true
+              },
+              "id": "llmAgentflow_triage-input-llmMemoryType-options",
+              "display": true
+            },
+            {
+              "label": "Window Size",
+              "name": "llmMemoryWindowSize",
+              "type": "number",
+              "default": "20",
+              "description": "Uses a fixed window size to surface the last N messages",
+              "show": {
+                "llmMemoryType": "windowSize"
+              },
+              "id": "llmAgentflow_triage-input-llmMemoryWindowSize-number",
+              "display": false
+            },
+            {
+              "label": "Max Token Limit",
+              "name": "llmMemoryMaxTokenLimit",
+              "type": "number",
+              "default": "2000",
+              "description": "Summarize conversations once token limit is reached. Default to 2000",
+              "show": {
+                "llmMemoryType": "conversationSummaryBuffer"
+              },
+              "id": "llmAgentflow_triage-input-llmMemoryMaxTokenLimit-number",
+              "display": false
+            },
+            {
+              "label": "Input Message",
+              "name": "llmUserMessage",
+              "type": "string",
+              "description": "Add an input message as user message at the end of the conversation",
+              "rows": 4,
+              "optional": true,
+              "acceptVariable": true,
+              "show": {
+                "llmEnableMemory": true
+              },
+              "id": "llmAgentflow_triage-input-llmUserMessage-string",
+              "display": true
+            },
+            {
+              "label": "Return Response As",
+              "name": "llmReturnResponseAs",
+              "type": "options",
+              "options": [
+                {
+                  "label": "User Message",
+                  "name": "userMessage"
+                },
+                {
+                  "label": "Assistant Message",
+                  "name": "assistantMessage"
+                }
+              ],
+              "default": "userMessage",
+              "id": "llmAgentflow_triage-input-llmReturnResponseAs-options",
+              "display": true
+            },
+            {
+              "label": "JSON Structured Output",
+              "name": "llmStructuredOutput",
+              "description": "Instruct the LLM to give output in a JSON structured schema",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "string"
+                },
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "String Array",
+                      "name": "stringArray"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    },
+                    {
+                      "label": "Enum",
+                      "name": "enum"
+                    },
+                    {
+                      "label": "JSON Array",
+                      "name": "jsonArray"
+                    }
+                  ]
+                },
+                {
+                  "label": "Enum Values",
+                  "name": "enumValues",
+                  "type": "string",
+                  "placeholder": "value1, value2, value3",
+                  "description": "Enum values. Separated by comma",
+                  "optional": true,
+                  "show": {
+                    "llmStructuredOutput[$index].type": "enum"
+                  }
+                },
+                {
+                  "label": "JSON Schema",
+                  "name": "jsonSchema",
+                  "type": "code",
+                  "placeholder": "{}",
+                  "description": "JSON schema for the structured output",
+                  "optional": true,
+                  "hideCodeExecute": true,
+                  "show": {
+                    "llmStructuredOutput[$index].type": "jsonArray"
+                  }
+                },
+                {
+                  "label": "Description",
+                  "name": "description",
+                  "type": "string",
+                  "placeholder": "Description of the key"
+                }
+              ],
+              "id": "llmAgentflow_triage-input-llmStructuredOutput-array",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "llmUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "llmAgentflow_triage-input-llmUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "llmModel": "",
+            "llmMessages": [
+              {
+                "role": "system",
+                "content": "You are an internal support triage assistant. Normalize the support request into structured fields only. Do not invent facts. Keep the summary short, operational and useful for an internal support queue. Consider both the user-provided urgency and the message content when deciding priority. In v1 you are not writing a customer reply. You are only enriching the internal ticket."
+              },
+              {
+                "role": "user",
+                "content": "Support request details:\\nRequester Name: {{ requesterName }}\\nRequester Email: {{ requesterEmail }}\\nCompany Name: {{ companyName }}\\nSubject: {{ subject }}\\nMessage: {{ message }}\\nUrgency: {{ urgency }}\\nReference ID: {{ referenceId }}\\nProduct Area: {{ productArea }}\\nConsent To Contact: {{ consentToContact }}\\nPreferred Channel: {{ preferredChannel }}\\n\\nReturn structured output only."
+              }
+            ],
+            "llmEnableMemory": false,
+            "llmMemoryType": "allMessages",
+            "llmMemoryWindowSize": "20",
+            "llmMemoryMaxTokenLimit": "2000",
+            "llmUserMessage": "",
+            "llmReturnResponseAs": "assistantMessage",
+            "llmStructuredOutput": [
+              {
+                "key": "category",
+                "type": "enum",
+                "enumValues": "bug, billing, access, feature_request, general_question, account, integration, other",
+                "description": "Best-fit support category"
+              },
+              {
+                "key": "priority",
+                "type": "enum",
+                "enumValues": "low, normal, high, critical",
+                "description": "Operational triage priority"
+              },
+              {
+                "key": "summary",
+                "type": "string",
+                "description": "Short internal summary"
+              },
+              {
+                "key": "suggestedTeam",
+                "type": "enum",
+                "enumValues": "support, product, engineering, billing, ops",
+                "description": "Team that should likely own the next step"
+              },
+              {
+                "key": "nextAction",
+                "type": "string",
+                "description": "Most useful immediate next action"
+              }
+            ],
+            "llmUpdateState": [
+              {
+                "key": "triageCategory",
+                "value": "{{ output.category }}"
+              },
+              {
+                "key": "triagePriority",
+                "value": "{{ output.priority }}"
+              },
+              {
+                "key": "triageSummary",
+                "value": "{{ output.summary }}"
+              },
+              {
+                "key": "triageSuggestedTeam",
+                "value": "{{ output.suggestedTeam }}"
+              },
+              {
+                "key": "triageNextAction",
+                "value": "{{ output.nextAction }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "llmAgentflow_triage-output-llmAgentflow",
+              "label": "LLM",
+              "name": "llmAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 172,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 840,
+          "y": 340
+        },
+        "selected": false
+      },
+      {
+        "id": "customFunctionAgentflow_payload",
+        "position": {
+          "x": 1120,
+          "y": 340
+        },
+        "data": {
+          "id": "customFunctionAgentflow_payload",
+          "label": "Build Ticket Payload",
+          "version": 1.1,
+          "name": "customFunctionAgentflow",
+          "type": "CustomFunction",
+          "color": "#E4B7FF",
+          "baseClasses": [
+            "CustomFunction"
+          ],
+          "category": "Agent Flows",
+          "description": "Execute custom function",
+          "inputParams": [
+            {
+              "label": "Input Variables",
+              "name": "customFunctionInputVariables",
+              "description": "Input variables can be used in the function with prefix $. For example: $foo",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Variable Name",
+                  "name": "variableName",
+                  "type": "string"
+                },
+                {
+                  "label": "Variable Value",
+                  "name": "variableValue",
+                  "type": "string",
+                  "acceptVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_payload-input-customFunctionInputVariables-array",
+              "display": true
+            },
+            {
+              "label": "Javascript Function",
+              "name": "customFunctionJavascriptFunction",
+              "type": "code",
+              "codeExample": "return '';",
+              "description": "The function to execute. Must return a string or an object that can be converted to a string.",
+              "id": "customFunctionAgentflow_payload-input-customFunctionJavascriptFunction-code",
+              "display": true
+            },
+            {
+              "label": "Update Flow State",
+              "name": "customFunctionUpdateState",
+              "description": "Update runtime state during the execution of the workflow",
+              "type": "array",
+              "optional": true,
+              "acceptVariable": true,
+              "array": [
+                {
+                  "label": "Key",
+                  "name": "key",
+                  "type": "asyncOptions",
+                  "loadMethod": "listRuntimeStateKeys"
+                },
+                {
+                  "label": "Value",
+                  "name": "value",
+                  "type": "string",
+                  "acceptVariable": true,
+                  "acceptNodeOutputAsVariable": true
+                }
+              ],
+              "id": "customFunctionAgentflow_payload-input-customFunctionUpdateState-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "customFunctionInputVariables": [
+              {
+                "variableName": "requesterName",
+                "variableValue": "{{ requesterName }}"
+              },
+              {
+                "variableName": "requesterEmail",
+                "variableValue": "{{ requesterEmail }}"
+              },
+              {
+                "variableName": "companyName",
+                "variableValue": "{{ companyName }}"
+              },
+              {
+                "variableName": "subject",
+                "variableValue": "{{ subject }}"
+              },
+              {
+                "variableName": "message",
+                "variableValue": "{{ message }}"
+              },
+              {
+                "variableName": "urgency",
+                "variableValue": "{{ urgency }}"
+              },
+              {
+                "variableName": "referenceId",
+                "variableValue": "{{ referenceId }}"
+              },
+              {
+                "variableName": "productArea",
+                "variableValue": "{{ productArea }}"
+              },
+              {
+                "variableName": "consentToContact",
+                "variableValue": "{{ consentToContact }}"
+              },
+              {
+                "variableName": "preferredChannel",
+                "variableValue": "{{ preferredChannel }}"
+              },
+              {
+                "variableName": "defaultStatus",
+                "variableValue": "{{ $flow.state.defaultStatus }}"
+              },
+              {
+                "variableName": "defaultAssigneeTeam",
+                "variableValue": "{{ $flow.state.defaultAssigneeTeam }}"
+              },
+              {
+                "variableName": "ticketPrefix",
+                "variableValue": "{{ $flow.state.ticketPrefix }}"
+              },
+              {
+                "variableName": "triageCategory",
+                "variableValue": "{{ $flow.state.triageCategory }}"
+              },
+              {
+                "variableName": "triagePriority",
+                "variableValue": "{{ $flow.state.triagePriority }}"
+              },
+              {
+                "variableName": "triageSummary",
+                "variableValue": "{{ $flow.state.triageSummary }}"
+              },
+              {
+                "variableName": "triageSuggestedTeam",
+                "variableValue": "{{ $flow.state.triageSuggestedTeam }}"
+              },
+              {
+                "variableName": "triageNextAction",
+                "variableValue": "{{ $flow.state.triageNextAction }}"
+              },
+              {
+                "variableName": "notificationEmail",
+                "variableValue": "{{ $flow.state.notificationEmail }}"
+              },
+              {
+                "variableName": "urgentNotificationEmail",
+                "variableValue": "{{ $flow.state.urgentNotificationEmail }}"
+              }
+            ],
+            "customFunctionJavascriptFunction": "const clean = (value, fallback = '') => String(value ?? fallback).trim();\nconst normalizePriority = (value) => {\n  const candidate = clean(value, 'normal').toLowerCase();\n  if (['low', 'normal', 'high', 'critical'].includes(candidate)) return candidate;\n  return 'normal';\n};\nconst normalizeCategory = (value) => {\n  const candidate = clean(value, 'other').toLowerCase();\n  if (['bug', 'billing', 'access', 'feature_request', 'general_question', 'account', 'integration', 'other'].includes(candidate)) return candidate;\n  return 'other';\n};\nconst normalizeTeam = (value) => {\n  const candidate = clean(value, clean($defaultAssigneeTeam, 'support')).toLowerCase();\n  if (['support', 'product', 'engineering', 'billing', 'ops'].includes(candidate)) return candidate;\n  return clean($defaultAssigneeTeam, 'support');\n};\nconst createdAtIso = new Date().toISOString();\nconst datePart = createdAtIso.slice(0, 10).replace(/-/g, '');\nconst shortId = Math.random().toString(36).slice(2, 8).toUpperCase();\nconst ticketPrefix = clean($ticketPrefix, 'SUP').toUpperCase();\nconst ticketId = `${ticketPrefix}-${datePart}-${shortId}`;\nconst priority = normalizePriority(clean($triagePriority, $urgency || 'normal'));\nconst isUrgent = priority === 'high' || priority === 'critical';\nconst category = normalizeCategory($triageCategory);\nconst assignedTeam = normalizeTeam($triageSuggestedTeam);\nconst summary = clean($triageSummary, clean($subject, 'Support request'));\nconst nextAction = clean($triageNextAction, 'Review the ticket and contact the requester if more information is required.');\nconst standardNotificationEmail = clean($notificationEmail);\nconst urgentNotificationEmail = clean($urgentNotificationEmail);\nconst notificationTargetEmail = isUrgent ? (urgentNotificationEmail || standardNotificationEmail) : standardNotificationEmail;\nconst payload = {\n  ticketId,\n  createdAt: createdAtIso,\n  status: clean($defaultStatus, 'new'),\n  requesterName: clean($requesterName),\n  requesterEmail: clean($requesterEmail),\n  companyName: clean($companyName),\n  subject: clean($subject),\n  message: clean($message),\n  urgency: normalizePriority(clean($urgency, 'normal')),\n  category,\n  priority,\n  summary,\n  assignedTeam,\n  nextAction,\n  referenceId: clean($referenceId),\n  productArea: clean($productArea),\n  preferredChannel: clean($preferredChannel),\n  consentToContact: clean($consentToContact).toLowerCase() === 'true'\n};\nconst notificationSubject = `[${priority.toUpperCase()}] ${ticketId} - ${clean($subject, 'Support request')}`;\nconst notificationBody = [\n  `Ticket ID: ${ticketId}`,\n  `Created At: ${createdAtIso}`,\n  `Priority: ${priority}`,\n  `Category: ${category}`,\n  `Assigned Team: ${assignedTeam}`,\n  `Requester: ${clean($requesterName)} <${clean($requesterEmail)}>` ,\n  `Company: ${clean($companyName)}`,\n  `Urgency (form): ${normalizePriority(clean($urgency, 'normal'))}`,\n  `Reference ID: ${clean($referenceId)}`,\n  `Product Area: ${clean($productArea)}`,\n  `Preferred Channel: ${clean($preferredChannel)}`,\n  '',\n  'Summary:',\n  summary,\n  '',\n  'Next Action:',\n  nextAction,\n  '',\n  'Original Message:',\n  clean($message)\n].join('\\n');\nreturn {\n  ticketId,\n  createdAtIso,\n  ticketRecordPayload: JSON.stringify(payload),\n  notificationSubject,\n  notificationBody,\n  notificationTargetEmail,\n  isUrgent\n};",
+            "customFunctionUpdateState": [
+              {
+                "key": "ticketId",
+                "value": "{{ output.ticketId }}"
+              },
+              {
+                "key": "createdAtIso",
+                "value": "{{ output.createdAtIso }}"
+              },
+              {
+                "key": "ticketRecordPayload",
+                "value": "{{ output.ticketRecordPayload }}"
+              },
+              {
+                "key": "notificationSubject",
+                "value": "{{ output.notificationSubject }}"
+              },
+              {
+                "key": "notificationBody",
+                "value": "{{ output.notificationBody }}"
+              },
+              {
+                "key": "notificationTargetEmail",
+                "value": "{{ output.notificationTargetEmail }}"
+              },
+              {
+                "key": "isUrgent",
+                "value": "{{ output.isUrgent }}"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "customFunctionAgentflow_payload-output-customFunctionAgentflow",
+              "label": "Custom Function",
+              "name": "customFunctionAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 184,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1120,
+          "y": 340
+        },
+        "selected": false
+      },
+      {
+        "id": "collectionsAgentflow_create",
+        "position": {
+          "x": 1400,
+          "y": 340
+        },
+        "data": {
+          "id": "collectionsAgentflow_create",
+          "label": "Create Ticket Record",
+          "version": 1,
+          "name": "collectionsAgentflow",
+          "type": "Collections",
+          "color": "#0F766E",
+          "baseClasses": [
+            "Collections"
+          ],
+          "category": "Agent Flows",
+          "description": "Manage Collections data models, records, fields, relations and views from Agent Flow.",
+          "inputParams": [
+            {
+              "label": "Mode",
+              "name": "mode",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Create Record",
+                  "name": "createRecord"
+                }
+              ],
+              "default": "createRecord",
+              "description": "Select the Collections operation to perform.",
+              "id": "collectionsAgentflow_create-input-mode-options",
+              "display": true
+            },
+            {
+              "label": "Collection ID",
+              "name": "collectionId",
+              "type": "resourceSelector",
+              "description": "Target collection identifier.",
+              "optional": true,
+              "acceptVariable": true,
+              "rendererConfig": {
+                "source": "collections",
+                "hideOuterLabel": true,
+                "selectionModeInputName": "collectionSelectionMode",
+                "manualValueInputName": "collectionManualId",
+                "selectedItemInputName": "selectedCollectionId",
+                "selectedGroupInputName": "selectedDataModelId",
+                "modeLabel": "Collection Source",
+                "manualModeLabel": "Collection ID",
+                "selectModeLabel": "Select Collection",
+                "manualInputLabel": "Collection ID",
+                "manualPlaceholder": "Collection ID or {{ variable }}",
+                "manualHelperText": "Raw collection ID or variable girebilirsin.",
+                "selectInfoText": "Data store icinden collection sec. Collection ID otomatik doldurulur.",
+                "triggerEmptyLabel": "Select collection",
+                "triggerEmptyDescription": "Choose from data stores",
+                "searchPlaceholder": "Search data store or collection",
+                "emptyItemsText": "No collections found.",
+                "groupBadgeSuffix": "collections",
+                "summaryIdLabel": "Collection ID",
+                "summaryInfoText": "Data alaninda Field Values bolumunu kullan. Secilen collection icin inputlar orada cikar."
+              },
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-collectionId-resourceSelector",
+              "display": false
+            },
+            {
+              "label": "Collection Selection Mode",
+              "name": "collectionSelectionMode",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-collectionSelectionMode-string",
+              "display": false
+            },
+            {
+              "label": "Manual Collection ID",
+              "name": "collectionManualId",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-collectionManualId-string",
+              "display": false
+            },
+            {
+              "label": "Selected Data Model ID",
+              "name": "selectedDataModelId",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-selectedDataModelId-string",
+              "display": false
+            },
+            {
+              "label": "Selected Collection ID",
+              "name": "selectedCollectionId",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-selectedCollectionId-string",
+              "display": false
+            },
+            {
+              "label": "Create Record Data Mode",
+              "name": "createRecordDataMode",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-createRecordDataMode-string",
+              "display": false
+            },
+            {
+              "label": "Create Record Field Values",
+              "name": "createRecordFieldValues",
+              "type": "string",
+              "hidden": true,
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-createRecordFieldValues-string",
+              "display": false
+            },
+            {
+              "label": "Data",
+              "name": "data",
+              "type": "schemaFieldForm",
+              "rows": 8,
+              "description": "Record payload as JSON object. In create record mode, field inputs can generate this automatically.",
+              "optional": true,
+              "acceptVariable": true,
+              "rendererConfig": {
+                "source": "collections",
+                "collectionIdInputName": "selectedCollectionId",
+                "dataModeInputName": "createRecordDataMode",
+                "fieldValuesInputName": "createRecordFieldValues",
+                "title": "Field Inputs",
+                "countBadgeSuffix": "writable fields",
+                "collectionIdLabel": "Collection ID",
+                "helperText": "Field key olarak {exampleFieldName} kullanilir. Buraya girdigin degerlerden `Data` JSON otomatik uretilir.",
+                "emptySelectionText": "Once collection sec, burada field bazli inputlar acilir.",
+                "loadingText": "Loading fields...",
+                "emptyWritableText": "Bu collection icin yazilabilir field yok.",
+                "valueHintText": "Variable veya literal deger",
+                "hiddenFieldsPrefix": "Computed fieldler formdan gizlendi:",
+                "placeholderTemplate": "{label} value",
+                "requiredBadgeText": "required"
+              },
+              "show": {
+                "mode": [
+                  "createRecord"
+                ]
+              },
+              "id": "collectionsAgentflow_create-input-data-schemaFieldForm",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "mode": "createRecord",
+            "collectionId": "{{ $flow.state.supportCollectionId }}",
+            "collectionSelectionMode": "manual",
+            "collectionManualId": "{{ $flow.state.supportCollectionId }}",
+            "selectedDataModelId": "",
+            "selectedCollectionId": "{{ $flow.state.supportCollectionId }}",
+            "createRecordDataMode": "fields",
+            "createRecordFieldValues": "",
+            "data": "{{ $flow.state.ticketRecordPayload }}"
+          },
+          "outputAnchors": [
+            {
+              "id": "collectionsAgentflow_create-output-collectionsAgentflow",
+              "label": "Collections",
+              "name": "collectionsAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 178,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1400,
+          "y": 340
+        },
+        "selected": false
+      },
+      {
+        "id": "conditionAgentflow_priority",
+        "position": {
+          "x": 1680,
+          "y": 340
+        },
+        "data": {
+          "id": "conditionAgentflow_priority",
+          "label": "Urgent Priority?",
+          "version": 1,
+          "name": "conditionAgentflow",
+          "type": "Condition",
+          "color": "#FFB938",
+          "baseClasses": [
+            "Condition"
+          ],
+          "category": "Agent Flows",
+          "description": "Split flows based on If Else conditions",
+          "inputParams": [
+            {
+              "label": "Conditions",
+              "name": "conditions",
+              "type": "array",
+              "description": "Values to compare",
+              "acceptVariable": true,
+              "default": [
+                {
+                  "type": "string",
+                  "value1": "",
+                  "operation": "equal",
+                  "value2": ""
+                }
+              ],
+              "array": [
+                {
+                  "label": "Type",
+                  "name": "type",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "String",
+                      "name": "string"
+                    },
+                    {
+                      "label": "Number",
+                      "name": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "name": "boolean"
+                    }
+                  ],
+                  "default": "string"
+                },
+                {
+                  "label": "Value 1",
+                  "name": "value1",
+                  "type": "string",
+                  "default": "",
+                  "description": "First value to be compared with",
+                  "acceptVariable": true,
+                  "show": {
+                    "conditions[$index].type": "string"
+                  }
+                },
+                {
+                  "label": "Operation",
+                  "name": "operation",
+                  "type": "options",
+                  "options": [
+                    {
+                      "label": "Contains",
+                      "name": "contains"
+                    },
+                    {
+                      "label": "Ends With",
+                      "name": "endsWith"
+                    },
+                    {
+                      "label": "Equal",
+                      "name": "equal"
+                    },
+                    {
+                      "label": "Not Contains",
+                      "name": "notContains"
+                    },
+                    {
+                      "label": "Not Equal",
+                      "name": "notEqual"
+                    },
+                    {
+                      "label": "Regex",
+                      "name": "regex"
+                    },
+                    {
+                      "label": "Starts With",
+                      "name": "startsWith"
+                    },
+                    {
+                      "label": "Is Empty",
+                      "name": "isEmpty"
+                    },
+                    {
+                      "label": "Not Empty",
+                      "name": "notEmpty"
+                    }
+                  ],
+                  "default": "equal",
+                  "description": "Type of operation",
+                  "show": {
+                    "conditions[$index].type": "string"
+                  }
+                },
+                {
+                  "label": "Value 2",
+                  "name": "value2",
+                  "type": "string",
+                  "default": "",
+                  "description": "Second value to be compared with",
+                  "acceptVariable": true,
+                  "show": {
+                    "conditions[$index].type": "string"
+                  },
+                  "hide": {
+                    "conditions[$index].operation": [
+                      "isEmpty",
+                      "notEmpty"
+                    ]
+                  }
+                }
+              ],
+              "id": "conditionAgentflow_priority-input-conditions-array",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "conditions": [
+              {
+                "type": "string",
+                "value1": "{{ $flow.state.isUrgent }}",
+                "operation": "equal",
+                "value2": "true"
+              }
+            ]
+          },
+          "outputAnchors": [
+            {
+              "id": "conditionAgentflow_priority-output-0",
+              "label": "Condition",
+              "name": "conditionAgentflow"
+            },
+            {
+              "id": "conditionAgentflow_priority-output-1",
+              "label": "Condition",
+              "name": "conditionAgentflow"
+            }
+          ],
+          "outputs": {
+            "conditionAgentflow": ""
+          },
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 142,
+        "height": 80,
+        "positionAbsolute": {
+          "x": 1680,
+          "y": 340
+        },
+        "selected": false
+      },
+      {
+        "id": "gmailAgentflow_urgent",
+        "position": {
+          "x": 1940,
+          "y": 220
+        },
+        "data": {
+          "id": "gmailAgentflow_urgent",
+          "label": "Urgent Notification Email",
+          "version": 1,
+          "name": "gmailAgentflow",
+          "type": "utility",
+          "color": "rgb(224, 224, 224)",
+          "baseClasses": [
+            "utility"
+          ],
+          "category": "Agent Flows",
+          "description": "Gmail utility node",
+          "inputParams": [
+            {
+              "label": "GMail Credential",
+              "name": "credential",
+              "type": "credential",
+              "credentialNames": [
+                "gmailOAuth2"
+              ],
+              "optional": false,
+              "id": "gmailAgentflow_urgent-input-credential-credential",
+              "display": true
+            },
+            {
+              "label": "Type",
+              "name": "gmailType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Drafts",
+                  "name": "drafts"
+                },
+                {
+                  "label": "Messages",
+                  "name": "messages"
+                },
+                {
+                  "label": "Labels",
+                  "name": "labels"
+                },
+                {
+                  "label": "Threads",
+                  "name": "threads"
+                }
+              ],
+              "id": "gmailAgentflow_urgent-input-gmailType-options",
+              "display": true
+            },
+            {
+              "label": "Message Actions",
+              "name": "messageAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Messages",
+                  "name": "listMessages"
+                },
+                {
+                  "label": "Get Message",
+                  "name": "getMessage"
+                },
+                {
+                  "label": "Send Message",
+                  "name": "sendMessage"
+                },
+                {
+                  "label": "Modify Message",
+                  "name": "modifyMessage"
+                },
+                {
+                  "label": "Trash Message",
+                  "name": "trashMessage"
+                },
+                {
+                  "label": "Untrash Message",
+                  "name": "untrashMessage"
+                },
+                {
+                  "label": "Delete Message",
+                  "name": "deleteMessage"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "messages"
+                ]
+              },
+              "id": "gmailAgentflow_urgent-input-messageAction-options",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "messageTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_urgent-input-messageTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "messageSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_urgent-input-messageSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "messageBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_urgent-input-messageBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "messageCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_urgent-input-messageCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "messageBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_urgent-input-messageBcc-string",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "credential": "",
+            "gmailType": "messages",
+            "messageAction": "sendMessage",
+            "messageTo": "{{ $flow.state.notificationTargetEmail }}",
+            "messageSubject": "{{ $flow.state.notificationSubject }}",
+            "messageBody": "{{ $flow.state.notificationBody }}",
+            "messageCc": "",
+            "messageBcc": ""
+          },
+          "outputAnchors": [
+            {
+              "id": "gmailAgentflow_urgent-output-gmailAgentflow",
+              "label": "GMail",
+              "name": "gmailAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 190,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1940,
+          "y": 220
+        },
+        "selected": false
+      },
+      {
+        "id": "gmailAgentflow_standard",
+        "position": {
+          "x": 1940,
+          "y": 460
+        },
+        "data": {
+          "id": "gmailAgentflow_standard",
+          "label": "Standard Notification Email",
+          "version": 1,
+          "name": "gmailAgentflow",
+          "type": "utility",
+          "color": "rgb(224, 224, 224)",
+          "baseClasses": [
+            "utility"
+          ],
+          "category": "Agent Flows",
+          "description": "Gmail utility node",
+          "inputParams": [
+            {
+              "label": "GMail Credential",
+              "name": "credential",
+              "type": "credential",
+              "credentialNames": [
+                "gmailOAuth2"
+              ],
+              "optional": false,
+              "id": "gmailAgentflow_standard-input-credential-credential",
+              "display": true
+            },
+            {
+              "label": "Type",
+              "name": "gmailType",
+              "type": "options",
+              "options": [
+                {
+                  "label": "Drafts",
+                  "name": "drafts"
+                },
+                {
+                  "label": "Messages",
+                  "name": "messages"
+                },
+                {
+                  "label": "Labels",
+                  "name": "labels"
+                },
+                {
+                  "label": "Threads",
+                  "name": "threads"
+                }
+              ],
+              "id": "gmailAgentflow_standard-input-gmailType-options",
+              "display": true
+            },
+            {
+              "label": "Message Actions",
+              "name": "messageAction",
+              "type": "options",
+              "options": [
+                {
+                  "label": "List Messages",
+                  "name": "listMessages"
+                },
+                {
+                  "label": "Get Message",
+                  "name": "getMessage"
+                },
+                {
+                  "label": "Send Message",
+                  "name": "sendMessage"
+                },
+                {
+                  "label": "Modify Message",
+                  "name": "modifyMessage"
+                },
+                {
+                  "label": "Trash Message",
+                  "name": "trashMessage"
+                },
+                {
+                  "label": "Untrash Message",
+                  "name": "untrashMessage"
+                },
+                {
+                  "label": "Delete Message",
+                  "name": "deleteMessage"
+                }
+              ],
+              "show": {
+                "gmailType": [
+                  "messages"
+                ]
+              },
+              "id": "gmailAgentflow_standard-input-messageAction-options",
+              "display": false
+            },
+            {
+              "label": "To",
+              "name": "messageTo",
+              "type": "string",
+              "description": "Recipient email address(es), comma-separated",
+              "placeholder": "user1@example.com,user2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_standard-input-messageTo-string",
+              "display": false
+            },
+            {
+              "label": "Subject",
+              "name": "messageSubject",
+              "type": "string",
+              "description": "Email subject",
+              "placeholder": "Email Subject",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_standard-input-messageSubject-string",
+              "display": false
+            },
+            {
+              "label": "Body",
+              "name": "messageBody",
+              "type": "string",
+              "description": "Email body content",
+              "placeholder": "Email content",
+              "rows": 4,
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "acceptVariable": true,
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_standard-input-messageBody-string",
+              "display": false
+            },
+            {
+              "label": "CC",
+              "name": "messageCc",
+              "type": "string",
+              "description": "CC email address(es), comma-separated",
+              "placeholder": "cc1@example.com,cc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_standard-input-messageCc-string",
+              "display": false
+            },
+            {
+              "label": "BCC",
+              "name": "messageBcc",
+              "type": "string",
+              "description": "BCC email address(es), comma-separated",
+              "placeholder": "bcc1@example.com,bcc2@example.com",
+              "show": {
+                "messageAction": [
+                  "sendMessage"
+                ]
+              },
+              "additionalParams": true,
+              "optional": true,
+              "id": "gmailAgentflow_standard-input-messageBcc-string",
+              "display": false
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "credential": "",
+            "gmailType": "messages",
+            "messageAction": "sendMessage",
+            "messageTo": "{{ $flow.state.notificationEmail }}",
+            "messageSubject": "{{ $flow.state.notificationSubject }}",
+            "messageBody": "{{ $flow.state.notificationBody }}",
+            "messageCc": "",
+            "messageBcc": ""
+          },
+          "outputAnchors": [
+            {
+              "id": "gmailAgentflow_standard-output-gmailAgentflow",
+              "label": "GMail",
+              "name": "gmailAgentflow"
+            }
+          ],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 196,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 1940,
+          "y": 460
+        },
+        "selected": false
+      },
+      {
+        "id": "directReplyAgentflow_success_urgent",
+        "position": {
+          "x": 2220,
+          "y": 220
+        },
+        "data": {
+          "id": "directReplyAgentflow_success_urgent",
+          "label": "Success Reply",
+          "version": 1,
+          "name": "directReplyAgentflow",
+          "type": "DirectReply",
+          "color": "#4DDBBB",
+          "hideOutput": true,
+          "baseClasses": [
+            "DirectReply"
+          ],
+          "category": "Agent Flows",
+          "description": "Directly reply to the user with a message",
+          "inputParams": [
+            {
+              "label": "Message",
+              "name": "directReplyMessage",
+              "type": "string",
+              "rows": 4,
+              "acceptVariable": true,
+              "id": "directReplyAgentflow_success_urgent-input-directReplyMessage-string",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "directReplyMessage": "Support ticket created successfully.\\nTicket ID: {{ $flow.state.ticketId }}\\nCategory: {{ $flow.state.triageCategory }}\\nPriority: {{ $flow.state.triagePriority }}\\nAssigned Team: {{ $flow.state.triageSuggestedTeam }}\\nStatus: Ticket recorded in Collections and urgent internal notification sent."
+          },
+          "outputAnchors": [],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 182,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 2220,
+          "y": 220
+        },
+        "selected": false
+      },
+      {
+        "id": "directReplyAgentflow_success_standard",
+        "position": {
+          "x": 2220,
+          "y": 460
+        },
+        "data": {
+          "id": "directReplyAgentflow_success_standard",
+          "label": "Success Reply",
+          "version": 1,
+          "name": "directReplyAgentflow",
+          "type": "DirectReply",
+          "color": "#4DDBBB",
+          "hideOutput": true,
+          "baseClasses": [
+            "DirectReply"
+          ],
+          "category": "Agent Flows",
+          "description": "Directly reply to the user with a message",
+          "inputParams": [
+            {
+              "label": "Message",
+              "name": "directReplyMessage",
+              "type": "string",
+              "rows": 4,
+              "acceptVariable": true,
+              "id": "directReplyAgentflow_success_standard-input-directReplyMessage-string",
+              "display": true
+            }
+          ],
+          "inputAnchors": [],
+          "inputs": {
+            "directReplyMessage": "Support ticket created successfully.\\nTicket ID: {{ $flow.state.ticketId }}\\nCategory: {{ $flow.state.triageCategory }}\\nPriority: {{ $flow.state.triagePriority }}\\nAssigned Team: {{ $flow.state.triageSuggestedTeam }}\\nStatus: Ticket recorded in Collections and standard internal notification sent."
+          },
+          "outputAnchors": [],
+          "outputs": {},
+          "selected": false
+        },
+        "type": "agentFlow",
+        "width": 188,
+        "height": 66,
+        "positionAbsolute": {
+          "x": 2220,
+          "y": 460
+        },
+        "selected": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "startAgentflow_0",
+        "sourceHandle": "startAgentflow_0-output-startAgentflow",
+        "target": "customFunctionAgentflow_config",
+        "targetHandle": "customFunctionAgentflow_config",
+        "data": {
+          "sourceColor": "#7EE787",
+          "targetColor": "#E4B7FF",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "startAgentflow_0-startAgentflow_0-output-startAgentflow-customFunctionAgentflow_config-customFunctionAgentflow_config",
+        "selected": false
+      },
+      {
+        "source": "customFunctionAgentflow_config",
+        "sourceHandle": "customFunctionAgentflow_config-output-customFunctionAgentflow",
+        "target": "conditionAgentflow_config",
+        "targetHandle": "conditionAgentflow_config",
+        "data": {
+          "sourceColor": "#E4B7FF",
+          "targetColor": "#FFB938",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "customFunctionAgentflow_config-customFunctionAgentflow_config-output-customFunctionAgentflow-conditionAgentflow_config-conditionAgentflow_config",
+        "selected": false
+      },
+      {
+        "source": "conditionAgentflow_config",
+        "sourceHandle": "conditionAgentflow_config-output-0",
+        "target": "directReplyAgentflow_setup",
+        "targetHandle": "directReplyAgentflow_setup",
+        "data": {
+          "sourceColor": "#FFB938",
+          "targetColor": "#4DDBBB",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "conditionAgentflow_config-conditionAgentflow_config-output-0-directReplyAgentflow_setup-directReplyAgentflow_setup",
+        "selected": false
+      },
+      {
+        "source": "conditionAgentflow_config",
+        "sourceHandle": "conditionAgentflow_config-output-1",
+        "target": "llmAgentflow_triage",
+        "targetHandle": "llmAgentflow_triage",
+        "data": {
+          "sourceColor": "#FFB938",
+          "targetColor": "#64B5F6",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "conditionAgentflow_config-conditionAgentflow_config-output-1-llmAgentflow_triage-llmAgentflow_triage",
+        "selected": false
+      },
+      {
+        "source": "llmAgentflow_triage",
+        "sourceHandle": "llmAgentflow_triage-output-llmAgentflow",
+        "target": "customFunctionAgentflow_payload",
+        "targetHandle": "customFunctionAgentflow_payload",
+        "data": {
+          "sourceColor": "#64B5F6",
+          "targetColor": "#E4B7FF",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "llmAgentflow_triage-llmAgentflow_triage-output-llmAgentflow-customFunctionAgentflow_payload-customFunctionAgentflow_payload",
+        "selected": false
+      },
+      {
+        "source": "customFunctionAgentflow_payload",
+        "sourceHandle": "customFunctionAgentflow_payload-output-customFunctionAgentflow",
+        "target": "collectionsAgentflow_create",
+        "targetHandle": "collectionsAgentflow_create",
+        "data": {
+          "sourceColor": "#E4B7FF",
+          "targetColor": "#0F766E",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "customFunctionAgentflow_payload-customFunctionAgentflow_payload-output-customFunctionAgentflow-collectionsAgentflow_create-collectionsAgentflow_create",
+        "selected": false
+      },
+      {
+        "source": "collectionsAgentflow_create",
+        "sourceHandle": "collectionsAgentflow_create-output-collectionsAgentflow",
+        "target": "conditionAgentflow_priority",
+        "targetHandle": "conditionAgentflow_priority",
+        "data": {
+          "sourceColor": "#0F766E",
+          "targetColor": "#FFB938",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "collectionsAgentflow_create-collectionsAgentflow_create-output-collectionsAgentflow-conditionAgentflow_priority-conditionAgentflow_priority",
+        "selected": false
+      },
+      {
+        "source": "conditionAgentflow_priority",
+        "sourceHandle": "conditionAgentflow_priority-output-0",
+        "target": "gmailAgentflow_urgent",
+        "targetHandle": "gmailAgentflow_urgent",
+        "data": {
+          "sourceColor": "#FFB938",
+          "targetColor": "rgb(224, 224, 224)",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "conditionAgentflow_priority-conditionAgentflow_priority-output-0-gmailAgentflow_urgent-gmailAgentflow_urgent",
+        "selected": false
+      },
+      {
+        "source": "conditionAgentflow_priority",
+        "sourceHandle": "conditionAgentflow_priority-output-1",
+        "target": "gmailAgentflow_standard",
+        "targetHandle": "gmailAgentflow_standard",
+        "data": {
+          "sourceColor": "#FFB938",
+          "targetColor": "rgb(224, 224, 224)",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "conditionAgentflow_priority-conditionAgentflow_priority-output-1-gmailAgentflow_standard-gmailAgentflow_standard",
+        "selected": false
+      },
+      {
+        "source": "gmailAgentflow_urgent",
+        "sourceHandle": "gmailAgentflow_urgent-output-gmailAgentflow",
+        "target": "directReplyAgentflow_success_urgent",
+        "targetHandle": "directReplyAgentflow_success_urgent",
+        "data": {
+          "sourceColor": "rgb(224, 224, 224)",
+          "targetColor": "#4DDBBB",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "gmailAgentflow_urgent-gmailAgentflow_urgent-output-gmailAgentflow-directReplyAgentflow_success_urgent-directReplyAgentflow_success_urgent",
+        "selected": false
+      },
+      {
+        "source": "gmailAgentflow_standard",
+        "sourceHandle": "gmailAgentflow_standard-output-gmailAgentflow",
+        "target": "directReplyAgentflow_success_standard",
+        "targetHandle": "directReplyAgentflow_success_standard",
+        "data": {
+          "sourceColor": "rgb(224, 224, 224)",
+          "targetColor": "#4DDBBB",
+          "isHumanInput": false
+        },
+        "type": "agentFlow",
+        "id": "gmailAgentflow_standard-gmailAgentflow_standard-output-gmailAgentflow-directReplyAgentflow_success_standard-directReplyAgentflow_success_standard",
+        "selected": false
+      }
+    ]
+  }
+}
