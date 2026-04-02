@@ -25,6 +25,8 @@ Bu tasarimda otomatik gonderim yoktur. V1 amaci, support ekibine guvenli bir dra
 
 ## Flow Mimarisi
 
+![_](images/image-01.png)
+
 ```text
 Start Button
    |
